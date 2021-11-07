@@ -1,56 +1,87 @@
 from flask import Flask
+from flask_restful import Resource, Api
+from flask_sqlalchemy import SQLAlchemy
 import os
-# from markupsafe import escape
 
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'main.sqlite'),
-    )
+# create the flask app
+app = Flask(__name__)
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
+# create the flask_restful API
+api = Api(app)
+app.config.from_object("config.Config")
 
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+# connect the SQLalchemy to the app
+db = SQLAlchemy(app)
+# db.create_all() # creates the database from scratch
 
-    # a simple "home page"
-    @app.route('/')
-    def index():
-        return 'Dofus Eye main page!!!!'
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    def __repr__(self):
+        return '<User %r>' % self.username
 
-    # register the database code with the app
-    from . import db
-    db.init_app(app)
+class Fight(db.Model):
+    fight_id = db.Column(db.Integer, primary_key=True, unique=True)
+    modified = db.Column(db.Integer, default=0)
+    guild_id = db.Column(db.Integer, nullable=False)
+    channel_id = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.Integer, nullable=False)
+    file_path = db.Column(db.String(), nullable=False)
+    sword = db.Column(db.String(), nullable=False)
+    w1_name = db.Column(db.String())
+    w1_class = db.Column(db.String())
+    w1_dead = db.Column(db.Integer())
+    w2_name = db.Column(db.String())
+    w2_class = db.Column(db.String())
+    w2_dead = db.Column(db.Integer())
+    w3_name = db.Column(db.String())
+    w3_class = db.Column(db.String())
+    w3_dead = db.Column(db.Integer())
+    w4_name = db.Column(db.String())
+    w4_class = db.Column(db.String())
+    w4_dead = db.Column(db.Integer())
+    w5_name = db.Column(db.String())
+    w5_class = db.Column(db.String())
+    w5_dead = db.Column(db.Integer())
+    l1_name = db.Column(db.String())
+    l1_class = db.Column(db.String())
+    l1_dead = db.Column(db.Integer())
+    l2_name = db.Column(db.String())
+    l2_class = db.Column(db.String())
+    l2_dead = db.Column(db.Integer())
+    l3_name = db.Column(db.String())
+    l3_class = db.Column(db.String())
+    l3_dead = db.Column(db.Integer())
+    l4_name = db.Column(db.String())
+    l4_class = db.Column(db.String())
+    l4_dead = db.Column(db.Integer())
+    l5_name = db.Column(db.String())
+    l5_class = db.Column(db.String())
+    l5_dead = db.Column(db.Integer())
 
-    # register the "query" blueprint
-    from . import query
-    app.register_blueprint(query.bp)
+    def __repr__(self) -> str:
+        return f"a fight... W1: {self.w1_name}, L1: {self.l1_name}."
 
-    return app
 
-# @app.route('/')
-# def index():
-#     return 'Dofus Eye main page!!!!'
+class HelloWorld(Resource):
+    def get(self):
+        return {'hello': 'world'}
 
-# @app.route('/hello')
-# def hello():
-#     return 'Hello, World'
+# a class of the object that we want to get/put
+class Fight2(Resource):
+    # the thing returned from get here must be json serializable
+    def get(self, account_name):
+        return {'data': f'hello {account_name}'}
+    
+    # stores data
+    # def post(self):
+    #     return {'uhhh': 'hmmm posted (allegedly)'}
 
-# # @app.route("/<name>")
-# # def hello(name):
-# #     return f"Hello, {escape(name)}!"
+# add the resource to a certain url
+api.add_resource(HelloWorld, '/')
+api.add_resource(Fight2, '/fight/<string:account_name>')
+
+if __name__ == '__main__':
+    app.run()

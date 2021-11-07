@@ -3,6 +3,8 @@ This is a test project. I wanted a web based viewer for the dofus perc screensho
 
 I have never build a website / web app before. Going to start with Flask based server and see what happens.
 
+going to try to use flask to run a restful api
+
 ## Running Locally
 ### 1. Virtual Environment
 
@@ -20,7 +22,7 @@ run `flask init-db`. This will create a fresh sqlite3 database of the proper sch
 the sqlite database is by default located at `/instance/main.sql`, but this can be changed in the flask config.
 
 
-### 3. start server
+### 3. start API server
 (https://flask.palletsprojects.com/en/2.0.x/quickstart/)
 
 
