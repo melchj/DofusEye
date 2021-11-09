@@ -1,10 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 
-# create the flask app
+# create the flask app and configure it
 app = Flask(__name__)
-
-# configure SQLalchemy, link to flask app
 app.config.from_object("config.Config")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 # TODO: for some reason, SQLALCHEMY_DATABASE_URI is not importing from the config?!
@@ -12,7 +10,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 # connect the SQLalchemy to the app
 db = SQLAlchemy(app)
 
-# TODO: is there a way to put this in its own file here so it's not smashed in the main file?
+# TODO: put this in its own file here so it's not smashed in the main file here?
+# probably with the db instance as well...
 class ModelFight(db.Model):
     __tablename__ = "perc_prism"
 
@@ -99,15 +98,18 @@ def getAliases():
         accountName = request.args.get('account_name')
         characterName = request.args.get('character_name')
 
+        if (accountName is None) or (characterName is None):
+            abort(400)
+
         a = ModelAlias(character_name = characterName, account_name = accountName)
-        # ModelAlias.
-        # TODO: need to actually put this in the database somehow using sqlalchemy...
+        db.session.add(a)
+        db.session.commit()
 
         return jsonify({'character_name' : a.character_name, 'account_name' : a.account_name})
 
 @app.route('/', methods=['GET'])
 def home():
-    return 'api running'
+    return jsonify({'status' : 'api running'})
 
 if __name__ == '__main__':
     app.run()
