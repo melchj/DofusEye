@@ -1,19 +1,19 @@
 from flask_marshmallow import Marshmallow
-from app.database.database import ModelFight, ModelAlias
+from app.database.database import Fight, Alias
 
 ma = Marshmallow()
 
 # ---- Marshmallow Schema ----
 class SchemaAlias(ma.SQLAlchemySchema):
     class Meta:
-        model = ModelAlias
+        model = Alias
     
     character_name = ma.auto_field()
     account_name = ma.auto_field()
 
 class SchemaFight(ma.SQLAlchemyAutoSchema):
     class Meta:
-        model = ModelFight
+        model = Fight
 
 schema_alias = SchemaAlias()
 schema_aliases = SchemaAlias(many=True)

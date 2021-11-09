@@ -4,7 +4,7 @@ db = SQLAlchemy()
 
 # ---- SQLalchemy Models ----
 # TODO: add a Base class that these inherit from, instead of db.Model?
-class ModelFight(db.Model):
+class Fight(db.Model):
     __tablename__ = "perc_prism"
 
     fight_id = db.Column(db.Integer, primary_key=True, unique=True)
@@ -48,7 +48,7 @@ class ModelFight(db.Model):
     def __repr__(self) -> str:
         return f"a fight... W1: {self.w1_name}, L1: {self.l1_name}."
 
-class ModelAlias(db.Model):
+class Alias(db.Model):
     __tablename__ = "aliases"
 
     # id = db.Column(db.Integer())
