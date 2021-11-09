@@ -5,8 +5,6 @@ from flask_marshmallow import Marshmallow
 # create the flask app and configure it
 app = Flask(__name__)
 app.config.from_object("config.Config")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
-# TODO: for some reason, SQLALCHEMY_DATABASE_URI is not importing from the config?!
 
 # connect the SQLalchemy to the app
 db = SQLAlchemy(app)
@@ -89,13 +87,17 @@ schema_alias = SchemaAlias()
 schema_fight = SchemaFight()
 
 
+
 # ---- endpoint routing and methods ----
 @app.route('/fights/<int:id>', methods=['GET'])
 def getFightByID(id):
     """returns a fight with given ID."""
     f = ModelFight.query.get(id) # query.get() gets the entry by primary key
-    # return {'response:' : f"{f}"}
-    return schema_fight.dump(f)
+
+    if f:
+        return schema_fight.dump(f)
+    else:   
+        abort(404)
 
 @app.route('/aliases', methods=['GET', 'POST'])
 def getAliases():
@@ -108,7 +110,6 @@ def getAliases():
             a = ModelAlias.query.filter(ModelAlias.character_name.like(name)).first()
 
             if a:
-                # return {'character_name' : alias.character_name, 'account_name' : alias.account_name}
                 return schema_alias.dump(a)
             else:
                 abort(404)
@@ -120,6 +121,7 @@ def getAliases():
                 d.append({'character_name' : a.character_name, 'account_name' : a.account_name})
             return jsonify(d)
             # TODO: figure out how to use marshmallow here??
+
     elif request.method == 'POST':
         accountName = request.args.get('account_name')
         characterName = request.args.get('character_name')
