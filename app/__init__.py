@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
 # create the flask app and configure it
 app = Flask(__name__)
@@ -10,6 +11,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 # connect the SQLalchemy to the app
 db = SQLAlchemy(app)
 
+# connect marshmallow (after SQLalchemy!)
+ma = Marshmallow(app)
+
+
+# ---- SQLalchemy Models ----
 # TODO: put this in its own file here so it's not smashed in the main file here?
 # probably with the db instance as well...
 class ModelFight(db.Model):
@@ -66,14 +72,32 @@ class ModelAlias(db.Model):
     def __repr__(self) -> str:
         return f"<Alias: ({self.account_name}) {self.character_name}>"
 
+
+# ---- Marshmallow Schema ----
+class SchemaAlias(ma.SQLAlchemySchema):
+    class Meta:
+        model = ModelAlias
+    
+    character_name = ma.auto_field()
+    account_name = ma.auto_field()
+
+class SchemaFight(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = ModelFight
+
+schema_alias = SchemaAlias()
+schema_fight = SchemaFight()
+
+
+# ---- endpoint routing and methods ----
 @app.route('/fights/<int:id>', methods=['GET'])
 def getFightByID(id):
     """returns a fight with given ID."""
-    f = ModelFight.query.filter(fight_id=id).first()
-    print(f)
-    return f
+    f = ModelFight.query.get(id) # query.get() gets the entry by primary key
+    # return {'response:' : f"{f}"}
+    return schema_fight.dump(f)
 
-@app.route('/aliases', methods=['GET'])
+@app.route('/aliases', methods=['GET', 'POST'])
 def getAliases():
     """returns or creates the character name / account name pair for a given character name."""
     if request.method == 'GET':
@@ -81,12 +105,13 @@ def getAliases():
         name = request.args.get('name')
         if name:
             # if name is given with '/aliases?name=character_name', give the alias of character_name
-            alias = ModelAlias.query.filter(ModelAlias.character_name.like(name)).first()
+            a = ModelAlias.query.filter(ModelAlias.character_name.like(name)).first()
 
-            if alias:
-                return {'character_name' : alias.character_name, 'account_name' : alias.account_name}
+            if a:
+                # return {'character_name' : alias.character_name, 'account_name' : alias.account_name}
+                return schema_alias.dump(a)
             else:
-                return f"error 404: '{name}'' character name not found."
+                abort(404)
         else:
             # if no character_name is specified, return all aliases
             aliases = ModelAlias.query.all()
@@ -94,6 +119,7 @@ def getAliases():
             for a in aliases:
                 d.append({'character_name' : a.character_name, 'account_name' : a.account_name})
             return jsonify(d)
+            # TODO: figure out how to use marshmallow here??
     elif request.method == 'POST':
         accountName = request.args.get('account_name')
         characterName = request.args.get('character_name')
@@ -104,8 +130,10 @@ def getAliases():
         a = ModelAlias(character_name = characterName, account_name = accountName)
         db.session.add(a)
         db.session.commit()
+        # TODO: this probably should return code 201 - "created"
 
-        return jsonify({'character_name' : a.character_name, 'account_name' : a.account_name})
+        # return jsonify({'character_name' : a.character_name, 'account_name' : a.account_name})
+        return schema_alias.dump(a)
 
 @app.route('/', methods=['GET'])
 def home():
