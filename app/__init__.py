@@ -1,12 +1,10 @@
-from flask import Flask, request
-from flask_restful import Resource, Api
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 # create the flask app
 app = Flask(__name__)
 
-# create the flask_restful API
-api = Api(app)
+# configure SQLalchemy, link to flask app
 app.config.from_object("config.Config")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 # TODO: for some reason, SQLALCHEMY_DATABASE_URI is not importing from the config?!
@@ -69,25 +67,21 @@ class ModelAlias(db.Model):
     def __repr__(self) -> str:
         return f"<Alias: ({self.account_name}) {self.character_name}>"
 
-class ResourceFight(Resource):
-    def get(self):
-        fightCount = ModelFight.query.count()
-        temp = 'test'
+@app.route('/fights/<int:id>', methods=['GET'])
+def getFightByID(id):
+    """returns a fight with given ID."""
+    f = ModelFight.query.filter(fight_id=id).first()
+    print(f)
+    return f
 
+@app.route('/aliases', methods=['GET'])
+def getAliases():
+    """returns or creates the character name / account name pair for a given character name."""
+    if request.method == 'GET':
         # get details on the query
-        query_parameters = request.args
-        id = query_parameters.get('id')
-        if id:
-            temp = id
-        return {temp : fightCount}
-
-class ResourceAlias(Resource):
-    def get(self):
-        """returns the character name / account name pair for a given character name."""
-        # get details on the query
-        query_parameters = request.args
-        name = query_parameters.get('name')
+        name = request.args.get('name')
         if name:
+            # if name is given with '/aliases?name=character_name', give the alias of character_name
             alias = ModelAlias.query.filter(ModelAlias.character_name.like(name)).first()
 
             if alias:
@@ -95,10 +89,25 @@ class ResourceAlias(Resource):
             else:
                 return f"error 404: '{name}'' character name not found."
         else:
-            return {'error' : 'must provide a query string.'}
+            # if no character_name is specified, return all aliases
+            aliases = ModelAlias.query.all()
+            d = []
+            for a in aliases:
+                d.append({'character_name' : a.character_name, 'account_name' : a.account_name})
+            return jsonify(d)
+    elif request.method == 'POST':
+        accountName = request.args.get('account_name')
+        characterName = request.args.get('character_name')
 
-api.add_resource(ResourceFight, '/test')
-api.add_resource(ResourceAlias, '/alias')
+        a = ModelAlias(character_name = characterName, account_name = accountName)
+        # ModelAlias.
+        # TODO: need to actually put this in the database somehow using sqlalchemy...
+
+        return jsonify({'character_name' : a.character_name, 'account_name' : a.account_name})
+
+@app.route('/', methods=['GET'])
+def home():
+    return 'api running'
 
 if __name__ == '__main__':
     app.run()
