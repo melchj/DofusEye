@@ -10,21 +10,25 @@ using flask, flask-restful, and sqlalchemy so far...
 ## Running Locally
 #### 1. Virtual Environment
 
-(https://flask.palletsprojects.com/en/2.0.x/installation/)
 
-start the virtual environment, update dependencies
+start virtual environment:
+```bash
+$ python3 -m venv venv
+```
 
-TODO: add this bit
+activate virtual environment:
+```bash
+$ . venv/bin/activate
+```
 
+update dependencies:
+```bash
+$ pip install -r requirements.txt
+```
 
 #### 2. initialize the database
 
-TODO: need to re-write this section on how to initialize database...
-
-run `flask init-db`. This will create a fresh sqlite3 database of the proper schema. note that this deletes anything already stored in the database.
-
-the sqlite database is by default located at `/instance/main.sql`, but this can be changed in the flask config.
-
+TODO: need to write this section...
 
 #### 3. start backend server
 (https://flask.palletsprojects.com/en/2.0.x/quickstart/)

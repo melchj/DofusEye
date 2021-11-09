@@ -16,4 +16,6 @@ class SchemaFight(ma.SQLAlchemyAutoSchema):
         model = ModelFight
 
 schema_alias = SchemaAlias()
+schema_aliases = SchemaAlias(many=True)
 schema_fight = SchemaFight()
+schema_fights = SchemaFight(many=True)

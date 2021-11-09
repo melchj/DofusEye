@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 # ---- SQLalchemy Models ----
-# TODO: add a Base class that these inherit from, instead of db.Model
+# TODO: add a Base class that these inherit from, instead of db.Model?
 class ModelFight(db.Model):
     __tablename__ = "perc_prism"
 

@@ -1,5 +1,11 @@
 from flask import Flask, request, jsonify, abort
 
+# TODO: request parser type thing? to better return errors when request doesnt include required info?
+# see:
+# https://www.youtube.com/watch?v=GMppyAPbLYk
+# https://www.techwithtim.net/flask-rest-api/
+
+
 # ---- application factory ----
 def create_app():
     # TODO: accept configs in this method
@@ -13,10 +19,10 @@ def create_app():
     db.init_app(app)
 
     # import marshmallow schema, attach app
-    from app.schema import ma, schema_alias, schema_fight
+    from app.schema import ma, schema_alias, schema_fight, schema_fights, schema_aliases
     ma.init_app(app)
 
-    # ---- fights endpoint ----
+    # ---- fights endpoints ----
     @app.route('/fights/<int:id>', methods=['GET'])
     def getFightByID(id):
         """returns a fight with given ID."""
@@ -26,8 +32,15 @@ def create_app():
             return schema_fight.dump(f)
         else:   
             abort(404)
+    
+    @app.route('/fights', methods=['GET'])
+    def getFights():
+        """returns all fights."""
+        f = ModelFight.query.all()
 
-    # ---- aliases endpoint ----
+        return jsonify(schema_fights.dump(f))
+
+    # ---- aliases endpoints ----
     @app.route('/aliases', methods=['GET', 'POST'])
     def getAliases():
         """returns or creates the character name / account name pair for a given character name."""
@@ -35,7 +48,7 @@ def create_app():
             # get details on the query
             name = request.args.get('name')
             if name:
-                # if name is given with '/aliases?name=character_name', give the alias of character_name
+                # if name is given with '/aliases?name=character_name', give the alias info of character_name
                 a = ModelAlias.query.filter(ModelAlias.character_name.like(name)).first()
 
                 if a:
@@ -45,11 +58,7 @@ def create_app():
             else:
                 # if no character_name is specified, return all aliases
                 aliases = ModelAlias.query.all()
-                d = []
-                for a in aliases:
-                    d.append({'character_name' : a.character_name, 'account_name' : a.account_name})
-                return jsonify(d)
-                # TODO: figure out how to use marshmallow here??
+                return jsonify(schema_aliases.dump(aliases))
 
         elif request.method == 'POST':
             accountName = request.args.get('account_name')
