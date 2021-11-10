@@ -1,15 +1,17 @@
 # Dofus Eye
 This is a test project. I wanted a web based viewer for the dofus perc screenshot reader bot. we'll see where this goes.
 
-I have never build a website / web app before. Going to start with Flask based server and see what happens.
+I have never build a website / web app before. Going to see what happens...
 
-going to try to use flask to run a restful api
+backend/api uses:
+- Flask
+- SQLalchemy
+- Marshmallow
 
-using flask, flask-restful, and sqlalchemy so far...
+to attempt to build a restful api.
 
-## Running Locally
+## Backend
 #### 1. Virtual Environment
-
 
 start virtual environment:
 ```bash
@@ -21,8 +23,9 @@ activate virtual environment:
 $ . venv/bin/activate
 ```
 
-update dependencies:
+navigate to server directory and update dependencies:
 ```bash
+$ cd ./server/
 $ pip install -r requirements.txt
 ```
 
@@ -33,6 +36,17 @@ TODO: need to write this section...
 #### 3. start backend server
 (https://flask.palletsprojects.com/en/2.0.x/quickstart/)
 
+(from server directory, in virtual environment)
 ```bash
 flask run
 ```
+
+## Front end
+
+need node.js installed.
+
+navicate to ./client
+
+do `npm start` to start the front end server. then navigate to `http://localhost:3000`.
+
+...
