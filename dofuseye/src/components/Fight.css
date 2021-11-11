@@ -1,0 +1,72 @@
+.class-icon {
+    /* is there a better way to reference the image? */
+    background: transparent url('/src/res/class-icons.png') 0 0 no-repeat;
+    background-size: auto;
+    background-origin: padding-box;
+    background-clip: border-box;
+
+    /* margin-bottom: 0.5rem;
+    margin-left: 0.3rem;
+    margin-right: 0.3rem; */
+    margin: .25rem;
+
+    display: inline-block;
+    height: 54px;
+    width: 54px;
+    position: relative;
+}
+
+.class-01 {
+    background-position: 0 0;
+}
+.class-02 {
+    background-position: 0 -397px;
+}
+.class-03 {
+    background-position: 0 -453px;
+}
+.class-04 {
+    background-position: 0 -510px;
+}
+.class-05 {
+    background-position: 0 -567px;
+}
+.class-06 {
+    background-position: 0 -623px;
+}
+.class-07 {
+    background-position: 0 -680px;
+}
+.class-08 {
+    background-position: 0 -737px;
+}
+.class-09 {
+    background-position: 0 -793px;
+}
+.class-10 {
+    background-position: 0 -57px;
+}
+.class-11 {
+    background-position: 0 -114px;
+}
+.class-12 {
+    background-position: 0 -169px;
+}
+.class-13 {
+    background-position: 0 -227px;
+}
+.class-14 {
+    background-position: 0 -284px;
+}
+.class-15 {
+    background-position: 0 -340px;
+}
+.class-16 {
+    background-position: 0 -850px;
+}
+.class-17 {
+    background-position: 0 -910px;
+}
+.class-18 {
+    background-position: 0 -965;
+}

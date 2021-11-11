@@ -45,8 +45,11 @@ flask run
 
 need node.js installed.
 
-navicate to ./client
+navigate to ./client
 
 do `npm start` to start the front end server. then navigate to `http://localhost:3000`.
 
 ...
+
+
+using axios for http requests (will be installed with other dependancies automatically)
