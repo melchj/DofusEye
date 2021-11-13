@@ -23,6 +23,11 @@ activate virtual environment:
 $ . venv/bin/activate
 ```
 
+or (this one's for windows)
+```bash
+$ .\venv\Scripts\activate
+```
+
 navigate to server directory and update dependencies:
 ```bash
 $ cd ./server/
