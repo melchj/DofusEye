@@ -6,7 +6,8 @@ export const Header = () => {
         padding: '2%',
         backgroundColor: '#2fd854',
         color: 'white',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontWeight: 'bold'
     }
 
     return(
