@@ -1,37 +1,60 @@
 import React from 'react'
+import { getFight } from '../services/FightService'
 import './Fight.css'
 
 const Fight = () => {
 
+    let [fightID, setFightID] = React.useState('')
+    let [fightData, setFightData] = React.useState('')
+
+    const fetchData = (e) => {
+        getFight(fightID)
+        .then((resp) => {
+            // console.log(resp)
+            setFightData(resp)
+        })
+        .catch((error) => {
+            console.log(error)
+        });
+    }
+
+    const inputChange = (e) => {
+        // console.log(e.target.value)
+        setFightID(e.target.value);
+        // e.target.value.replace(/\D/,'')
+    }
+
+    const numsOnly = (event) => {
+        if (!/[0-9]/.test(event.key)) {
+            event.preventDefault();
+        }
+    }
+
     return (
         <div className="container">
             <div className="row">
-                <h2>Fight #1234</h2>
+                <h2>Fight #{fightData && fightData.fight_id}</h2>
+                <div className="form-group">
+                    <input type="text" onKeyPress={(e) => numsOnly(e)} onChange={(e) => inputChange(e)} className="form-control" name="fightid" id="fightid" placeholder="Fight ID" />
+                    <button onClick={(e) => fetchData(e)} type='button' className="btn btn-danger">Load Fight</button>
+                </div>
             </div>
             <div className="row">
                 <div className="col-md-6">
                     <h3>Winners</h3>
-                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div> winner 1</div>
-                    <div className="row align-items-center"><div className="class-icon class-02"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-03"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-04"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-05"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-06"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-07"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-08"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-09"></div> winner 1</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.w1_name}</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.w2_name}</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.w3_name}</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.w4_name}</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.w5_name}</div>
                 </div>
                 <div className="col-md-6">
                     <h3>Losers</h3>
-                    <div className="row"><div className="class-icon class-10"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-11"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-12"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-13"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-14"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-15"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-16"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-17"></div> winner 1</div>
-                    <div className="row"><div className="class-icon class-18"></div> winner 1</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.l1_name}</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.l2_name}</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.l3_name}</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.l4_name}</div>
+                    <div className="row align-items-center"><div className="class-icon class-01 me-3"></div>{fightData.l5_name}</div>
                 </div>
             </div>
         </div>
