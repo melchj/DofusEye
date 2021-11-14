@@ -1,5 +1,5 @@
 import React from 'react'
-import { getFight } from '../services/FightService';
+import { getFight, getFightsByCharacter, getFightsList } from '../services/FightService';
 import Fight from './Fight';
 
 class FightList extends React.Component {
@@ -16,32 +16,34 @@ class FightList extends React.Component {
     }
 
     fetchData() {
-        const fightDatas = this.state.fightDatas.slice();
+        // call API to get a list of fight data to put in this.state
+        getFightsList(this.props.fightIDs)
+        .then((resp) => {
+            this.setState({fightDatas: resp});
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 
-        // loop through all fightIDs in this component's properties
-        // and fetch their data from the API helper
-        // TODO: fetch all at once from API with a single api call?...
-        this.props.fightIDs.map((fightID, i) => {
-            getFight(fightID)
-            .then((resp) => {
-                fightDatas[i] = resp;
-                this.setState({fightDatas: fightDatas});
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-        });
+        // call API to get all fights for a given character name
+        // getFightsByCharacter('lucent')
+        // .then((resp) => {
+        //     this.setState({fightDatas: resp});
+        // })
+        // .catch((error) => {
+        //     console.log(error);
+        // })
     }
 
     renderAllFights() {
         if (!this.state.fightDatas) {
-            console.log('no fights to render, fightDatas is null...')
+            console.log('FightList: no fights to render, fightDatas is null...')
             return null;
         }
 
         return (
             this.state.fightDatas.map((fightData, index) => {
-                console.log('rendering Fight index: '+index);
+                // console.log('rendering Fight index: '+index);
                 // console.log(fightData['fight_id']);
                 return (
                     <div key={fightData['fight_id']}>
@@ -63,6 +65,7 @@ class FightList extends React.Component {
     render() {
         return (
             <div>
+                <h2>Showing {this.state.fightDatas && this.state.fightDatas.length} fights:</h2>
                 {this.renderAllFights()}
             </div>
         );
