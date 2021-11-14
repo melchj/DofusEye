@@ -1,11 +1,12 @@
 // import logo from './logo.svg';
 import React from 'react';
 import './App.css';
-import Alias from './components/Alias';
-import Fight from './components/Fight';
+// import Alias from './components/Alias';
+// import Fight from './components/Fight';
+import FightList from './components/FightList';
 import { Header } from './components/Header';
-import { getAlias } from './services/AliasService';
-import { getFight } from './services/FightService';
+// import { getAlias } from './services/AliasService';
+// import { getFight } from './services/FightService';
 
 function App() {
 
@@ -15,7 +16,8 @@ function App() {
       {/* <Alias
         onChangeForm={onChangeForm}
       ></Alias> */}
-      <Fight></Fight>
+      {/* <Fight></Fight> */}
+      <FightList/>
     </div>
   );
 }
