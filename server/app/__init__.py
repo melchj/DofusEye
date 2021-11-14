@@ -49,8 +49,9 @@ def create_app():
                 Fight.l3_name.like(character_name),
                 Fight.l4_name.like(character_name),
                 Fight.l5_name.like(character_name)
-            ))
-            # TODO: need to filter out results that come from testing channels. see discord bot query
+            )
+        )
+        # TODO: need to filter out results that come from testing channels. see discord bot query
         if result:
             return jsonify(schema_fights.dump(result))
         else:
@@ -58,10 +59,32 @@ def create_app():
 
     @app.route('/api/fights', methods=['GET'])
     def getFights():
-        """returns all fights."""
-        f = Fight.query.all()
+        """returns all fights or just those with given ID(s), if specified.
+        parameters:
+            none - returns all fights in DB
+            id - returns fight with given id
+            ids - should be comma separated numbers (e.g. '?ids=12,55,213'). returns all fights listed."""
+        id = request.args.get('id')
+        ids = request.args.get('ids')
 
-        return jsonify(schema_fights.dump(f))
+        if ids:
+            ids = ids.split(',')
+            result = db.session.query(Fight).filter(or_(*[Fight.fight_id.like(_id) for _id in ids]))
+            if result:
+                return jsonify(schema_fights.dump(result))
+            else:
+                abort(404)
+
+        elif id:
+            f = Fight.query.get(id)
+            if f:
+                return schema_fight.dump(f)
+            else:   
+                abort(404)
+
+        else:
+            f = Fight.query.all()
+            return jsonify(schema_fights.dump(f))
 
     # ---- aliases endpoints ----
     # TODO: figure out if this should use a different endpoint (e.i. '/api/aliases/<character_name>)
