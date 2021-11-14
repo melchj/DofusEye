@@ -6,9 +6,8 @@ class FightList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // fights: new Array(),
-            // fights: Array(3).fill(Fight),
-            fightDatas: Array(3).fill(null),
+            // TODO: i am not sure if using props to set initial state is ok... might need to follow up
+            fightDatas: Array(this.props.fightIDs.length),
         };
     }
 
@@ -17,37 +16,40 @@ class FightList extends React.Component {
     }
 
     fetchData() {
-        // const squares = this.state.squares.slice();
-        // squares[i] = 'X';
-        // this.setState({squares: squares});
         const fightDatas = this.state.fightDatas.slice();
 
-        getFight(22)
-        .then((resp) => {
-            fightDatas[0] = resp;
-            this.setState({fightDatas: fightDatas});
-        })
-        .catch((error) => {
-            console.log(error)
+        // loop through all fightIDs in this component's properties
+        // and fetch their data from the API helper
+        // TODO: fetch all at once from API with a single api call?...
+        this.props.fightIDs.map((fightID, i) => {
+            getFight(fightID)
+            .then((resp) => {
+                fightDatas[i] = resp;
+                this.setState({fightDatas: fightDatas});
+            })
+            .catch((error) => {
+                console.log(error);
+            })
         });
+    }
 
-        getFight(23)
-        .then((resp) => {
-            fightDatas[1] = resp;
-            this.setState({fightDatas: fightDatas});
-        })
-        .catch((error) => {
-            console.log(error)
-        });
+    renderAllFights() {
+        if (!this.state.fightDatas) {
+            console.log('no fights to render, fightDatas is null...')
+            return null;
+        }
 
-        getFight(656)
-        .then((resp) => {
-            fightDatas[2] = resp;
-            this.setState({fightDatas: fightDatas});
-        })
-        .catch((error) => {
-            console.log(error)
-        });
+        return (
+            this.state.fightDatas.map((fightData, index) => {
+                console.log('rendering Fight index: '+index);
+                // console.log(fightData['fight_id']);
+                return (
+                    <div key={fightData['fight_id']}>
+                        {this.renderFight(index)}
+                    </div>
+                    );
+            })
+        );
     }
 
     renderFight(i) {
@@ -61,24 +63,7 @@ class FightList extends React.Component {
     render() {
         return (
             <div>
-                <div>
-                    <button
-                        onClick={() => this.fetchData()}
-                        type='button'
-                        className="btn btn-primary"
-                    >
-                        Load Fights
-                    </button>
-                </div>
-                <div>
-                    {this.renderFight(0)}
-                </div>
-                <div>
-                    {this.renderFight(1)}
-                </div>
-                <div>
-                    {this.renderFight(2)}
-                </div>
+                {this.renderAllFights()}
             </div>
         );
     }
