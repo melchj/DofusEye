@@ -86,6 +86,32 @@ def create_app():
             f = Fight.query.all()
             return jsonify(schema_fights.dump(f))
 
+    # ---- fightIDs endpoints ----
+    @app.route('/api/fightids/character/<string:character_name>', methods=['GET'])
+    def getFightIDforCharacter(character_name):
+        """
+        returns a list of ints: the fight IDs for all fights that the character is in.
+        """
+        result = db.session.query(Fight.fight_id).filter(
+            or_(
+                Fight.w1_name.like(character_name),
+                Fight.w2_name.like(character_name),
+                Fight.w3_name.like(character_name),
+                Fight.w4_name.like(character_name),
+                Fight.w5_name.like(character_name),
+                Fight.l1_name.like(character_name),
+                Fight.l2_name.like(character_name),
+                Fight.l3_name.like(character_name),
+                Fight.l4_name.like(character_name),
+                Fight.l5_name.like(character_name)
+            )
+        )
+        # TODO: need to filter out results that come from testing channels. see discord bot query
+        if result:
+            return jsonify(schema_fights.dump(result))
+        else:
+            abort(404)
+
     # ---- aliases endpoints ----
     # TODO: figure out if this should use a different endpoint (e.i. '/api/aliases/<character_name>)
     # or if it is better as a query string (e.i. '/api/aliases?name=character_name')

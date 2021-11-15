@@ -29,3 +29,6 @@ reqGet('/api/aliases?name=ctest')
 
 reqGet('/api/fights/333')
 reqGet('/api/fights?ids=33,25,366,453')
+
+reqGet('/api/fightids/character/celunt')
+reqGet('/api/fights/character/celunt')
