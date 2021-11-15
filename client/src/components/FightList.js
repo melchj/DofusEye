@@ -7,7 +7,7 @@ class FightList extends React.Component {
         super(props);
         this.state = {
             // TODO: i am not sure if using props to set initial state is ok... might need to follow up
-            fightDatas: Array(this.props.fightIDs.length),
+            // fightDatas: Array(this.props.fightIDs.length),
         };
     }
 
@@ -16,7 +16,7 @@ class FightList extends React.Component {
     }
 
     fetchData() {
-        // call API to get a list of fight data to put in this.state
+        // call API to get a list of fight data to put in this.state, which is passed to child Fight components
         getFightsList(this.props.fightIDs)
         .then((resp) => {
             this.setState({fightDatas: resp});
@@ -24,20 +24,11 @@ class FightList extends React.Component {
         .catch((error) => {
             console.log(error);
         })
-
-        // call API to get all fights for a given character name
-        // getFightsByCharacter('lucent')
-        // .then((resp) => {
-        //     this.setState({fightDatas: resp});
-        // })
-        // .catch((error) => {
-        //     console.log(error);
-        // })
     }
 
-    renderAllFights() {
+    renderFights() {
         if (!this.state.fightDatas) {
-            console.log('FightList: no fights to render, fightDatas is null...')
+            // console.log('FightList: no fights to render, fightDatas is null...')
             return null;
         }
 
@@ -47,26 +38,18 @@ class FightList extends React.Component {
                 // console.log(fightData['fight_id']);
                 return (
                     <div key={fightData['fight_id']}>
-                        {this.renderFight(index)}
+                        <Fight fightData={this.state.fightDatas && this.state.fightDatas[index]}/>
                     </div>
                     );
             })
         );
     }
 
-    renderFight(i) {
-        return (
-            <Fight
-                fightData={this.state.fightDatas && this.state.fightDatas[i]}
-            />
-        );
-    }
-
     render() {
         return (
-            <div>
+            <div className="container">
                 <h2>Showing {this.state.fightDatas && this.state.fightDatas.length} fights:</h2>
-                {this.renderAllFights()}
+                {this.renderFights()}
             </div>
         );
     }
