@@ -15,7 +15,18 @@ class FightList extends React.Component {
         this.fetchData();
     }
 
+    componentDidUpdate() {
+        // TODO: perhaps use getSnapshotBeforeUpdate to only fetch from API if fight ID list has changed
+        // right now, even if the fight ID list is the same, it will fetch from API
+        this.fetchData();
+    }
+
     fetchData() {
+        // return if list is empty to avoid requesting ALL fights from API (API does this for empty request)
+        if (this.props.fightIDs.length == 0) {
+            return;
+        }
+
         // call API to get a list of fight data to put in this.state, which is passed to child Fight components
         getFightsList(this.props.fightIDs)
         .then((resp) => {
@@ -47,8 +58,9 @@ class FightList extends React.Component {
 
     render() {
         return (
-            <div className="container">
+            <div>
                 <h2>Showing {this.state.fightDatas && this.state.fightDatas.length} fights:</h2>
+                <div>{this.props.fightIDs}</div>
                 {this.renderFights()}
             </div>
         );
