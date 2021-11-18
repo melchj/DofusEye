@@ -13,10 +13,13 @@ class FightList extends React.Component {
         this.fetchData();
     }
 
-    componentDidUpdate() {
-        // TODO: perhaps use getSnapshotBeforeUpdate to only fetch from API if fight ID list has changed
-        // right now, even if the fight ID list is the same, it will fetch from API
-        this.fetchData();
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        // console.log('FightList did update')
+        // check to make sure something in props changed, to avoid inifinite loop:
+        if (this.props.fightIDs !== prevProps.fightIDs) {
+            // console.log(this.props.fightIDs)
+            this.fetchData();
+        }
     }
 
     fetchData() {
