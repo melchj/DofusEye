@@ -38,6 +38,9 @@ class App extends React.Component {
     .catch((error) => {
       console.log(error);
     })
+
+    // also, update the Stats component
+    this.setState({characterName: character_name});
   }
 
   render() {
@@ -48,7 +51,9 @@ class App extends React.Component {
           <CharacterQuery
             onClickHandler={this.updateFightIDs.bind(this)}
           />
-          <Stats/>
+          <Stats
+            characterName={this.state.characterName}
+          />
           <FightList
             fightIDs={this.state.fightIDlist}
           />

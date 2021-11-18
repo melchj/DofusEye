@@ -2,6 +2,7 @@ import React from 'react'
 import { getFightsList } from '../services/FightService';
 import Fight from './Fight';
 
+// TODO: add ways to filter the list of fights here. 5v5 only, attacks, defs, wins, losses, etc...
 class FightList extends React.Component {
     constructor(props) {
         super(props);
