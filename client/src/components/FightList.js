@@ -1,13 +1,11 @@
 import React from 'react'
-import { getFight, getFightsByCharacter, getFightsList } from '../services/FightService';
+import { getFightsList } from '../services/FightService';
 import Fight from './Fight';
 
 class FightList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // TODO: i am not sure if using props to set initial state is ok... might need to follow up
-            // fightDatas: Array(this.props.fightIDs.length),
         };
     }
 
@@ -60,7 +58,6 @@ class FightList extends React.Component {
         return (
             <div>
                 <h2>Showing {this.state.fightDatas && this.state.fightDatas.length} fights:</h2>
-                <div>{this.props.fightIDs}</div>
                 {this.renderFights()}
             </div>
         );

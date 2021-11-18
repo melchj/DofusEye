@@ -3,6 +3,7 @@ import './App.css';
 import CharacterQuery from './components/CharacterQuery';
 import FightList from './components/FightList';
 import { Header } from './components/Header';
+import Stats from './components/Stats';
 import { getFightIDsByCharacter } from './services/FightService';
 
 class App extends React.Component {
@@ -47,6 +48,7 @@ class App extends React.Component {
           <CharacterQuery
             onClickHandler={this.updateFightIDs.bind(this)}
           />
+          <Stats/>
           <FightList
             fightIDs={this.state.fightIDlist}
           />
