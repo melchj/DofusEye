@@ -14,7 +14,7 @@ export async function getFight(fight_id) {
 
 export async function getFightsByCharacter(character_name) {
     try {
-        const response = await axios.get('/api/fights/character/'+character_name);
+        const response = await axios.get('/api/fights/characters/'+character_name);
         return response.data;
     } catch (error) {
         console.log(error)
@@ -32,7 +32,7 @@ export async function getFightsList(fightIDs) {
 
 export async function getFightIDsByCharacter(character_name) {
     try {
-        const response = await axios.get('/api/fightids/character/'+character_name);
+        const response = await axios.get('/api/fightids/characters/'+character_name);
         return response.data;
     } catch (error) {
         console.log(error)

@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, abort
 from sqlalchemy import or_
 
+from app.stats import getCharacterStats
+
 # TODO: request parser type thing? to better return errors when request doesnt include required info?
 # see:
 # https://www.youtube.com/watch?v=GMppyAPbLYk
@@ -23,6 +25,54 @@ def create_app():
     from app.schema import ma, schema_alias, schema_fight, schema_fights, schema_aliases
     ma.init_app(app)
 
+    # ---- stats endpoints ----
+    @app.route('/api/stats/characters/<string:character_name>', methods=['GET'])
+    def endpointCharacterStats(character_name):
+        # get all fights this char is in:
+        # TODO: this query is copy/pasted... need to refactor into it's own function
+        # TODO: need to filter out results that come from testing channels. see discord bot query
+        queryResult = db.session.query(Fight).filter(
+            or_(
+                Fight.w1_name.like(character_name),
+                Fight.w2_name.like(character_name),
+                Fight.w3_name.like(character_name),
+                Fight.w4_name.like(character_name),
+                Fight.w5_name.like(character_name),
+                Fight.l1_name.like(character_name),
+                Fight.l2_name.like(character_name),
+                Fight.l3_name.like(character_name),
+                Fight.l4_name.like(character_name),
+                Fight.l5_name.like(character_name)
+            )
+        )
+
+        result = getCharacterStats(schema_fights.dump(queryResult), character_name)
+        
+        # result = {
+        #     # full 5v5 fights (attacks and defs)
+        #     '5v5Total': 50,
+        #     '5v5Wins': 50,
+        #     # all XvY fights (attacks and defs)
+        #     'AllTotal': 50,
+        #     'AllWins': 50,
+        #     # 5v5 attacks
+        #     '5v5ATotal': 20,
+        #     '5v5AWins': 20,
+        #     # XvY attacks
+        #     'AllATotal': 20,
+        #     'AllAWins': 20,
+        #     # 5v5 defs
+        #     '5v5DTotal' : 30,
+        #     '5v5DWins' : 30,
+        #     # XvY defs
+        #     'AllDTotal': 20,
+        #     'AllDWins': 20,
+        #     # other
+        #     'nemesis': 'some-player',
+        #     'bestFriend': 'someone-else'
+        # }
+        return jsonify(result)
+
     # ---- fights endpoints ----
     @app.route('/api/fights/<int:id>', methods=['GET'])
     def getFightByID(id):
@@ -34,7 +84,7 @@ def create_app():
         else:   
             abort(404)
     
-    @app.route('/api/fights/character/<string:character_name>', methods=['GET'])
+    @app.route('/api/fights/characters/<string:character_name>', methods=['GET'])
     def getFightByCharacter(character_name):
         """returns all the fights that this character is in. or 404 if none found."""
         result = db.session.query(Fight).filter(
@@ -87,7 +137,7 @@ def create_app():
             return jsonify(schema_fights.dump(f))
 
     # ---- fightIDs endpoints ----
-    @app.route('/api/fightids/character/<string:character_name>', methods=['GET'])
+    @app.route('/api/fightids/characters/<string:character_name>', methods=['GET'])
     def getFightIDforCharacter(character_name):
         """
         returns a list of ints: the fight IDs for all fights that the character is in.

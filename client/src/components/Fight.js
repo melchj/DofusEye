@@ -18,6 +18,7 @@ class Fight extends React.Component {
                 <div className="card-body">
                     <div className="row">
                         <h2 className="card-title">Fight #{this.props.fightData && this.props.fightData.fight_id}</h2>
+                        <p>Attacker: {this.props.fightData.sword}</p>
                     </div>
                     <div className="row">
                         <div className="col-md-6">
