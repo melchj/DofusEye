@@ -50,7 +50,7 @@ class FightList extends React.Component {
                 // console.log('rendering Fight index: '+index);
                 // console.log(fightData['fight_id']);
                 return (
-                    <div key={fightData['fight_id']}>
+                    <div className="col-md-6" key={fightData['fight_id']}>
                         <Fight fightData={this.state.fightDatas && this.state.fightDatas[index]}/>
                     </div>
                     );
@@ -60,8 +60,10 @@ class FightList extends React.Component {
 
     render() {
         return (
-            <div>
-                <h2>Showing {this.state.fightDatas && this.state.fightDatas.length} fights:</h2>
+            <div className="row">
+                <div className="col-12">
+                    <h2>Showing {this.state.fightDatas && this.state.fightDatas.length} fights:</h2>
+                </div>
                 {this.renderFights()}
             </div>
         );

@@ -1,3 +1,27 @@
+.attacker-icon {
+    background: transparent url('/src/res/sword.png') 0 0 no-repeat;
+    background-size: auto;
+    background-origin: padding-box;
+    background-clip: border-box;
+
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    position: relative;
+}
+
+.dead-icon {
+    background: transparent url('/src/res/skull.png') 0 0 no-repeat;
+    background-size: auto;
+    background-origin: padding-box;
+    background-clip: border-box;
+
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    position: relative;
+}
+
 .class-icon {
     /* is there a better way to reference the image? */
     background: transparent url('/src/res/class-icons.png') 0 0 no-repeat;

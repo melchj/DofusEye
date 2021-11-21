@@ -149,12 +149,12 @@ class Stats extends React.Component {
                         <div className='col'>
                             <h3>Nemesis:</h3>
                             <p>(most common enemy)</p>
-                            <p>uhh idk</p>
+                            <p>uhh idk, not implemented</p>
                         </div>
                         <div className='col'>
                             <h3>Best Friend:</h3>
                             <p>(most common teammate)</p>
-                            <p>hmmm</p>
+                            <p>hmmm... not implemented</p>
                         </div>
                     </div>
                 </div>

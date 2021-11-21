@@ -9,7 +9,33 @@ class Fight extends React.Component {
         var className = "class-icon me-3";
         className += cl;
 
-        return className
+        return className;
+    }
+
+    renderCharacter(pos) {
+        const posName = pos+"_name";
+        // const posClass = pos+"_class";
+        const posDead = pos+"_dead";
+
+        if (this.props.fightData) {
+            if (this.props.fightData[posName] == null) {
+                // if pos_name == null, then no character here, skip this
+                return null;
+            }
+
+            var isDead = this.props.fightData[posDead] == 1
+            var isAttacker = this.props.fightData.sword.toUpperCase() === pos.toUpperCase();
+
+            return (
+                <div className="row align-items-center">
+                    <div className={this.classStyle(pos)}></div>
+                    {this.props.fightData && this.props.fightData[posName]}
+                    {isDead && <div className="dead-icon"></div>}
+                    {isAttacker && <div className="attacker-icon"></div>}
+                </div>
+                );
+        }
+        return null;
     }
 
     render() {
@@ -17,25 +43,25 @@ class Fight extends React.Component {
             <div className="card text-dark bg-light mt-3">
                 <div className="card-body">
                     <div className="row">
-                        <h2 className="card-title">Fight #{this.props.fightData && this.props.fightData.fight_id}</h2>
-                        <p>Attacker: {this.props.fightData.sword}</p>
+                        <h2 className="card-title">Fight ID: {this.props.fightData && this.props.fightData.fight_id}</h2>
+                        {/* <p>{this.props.fightData.date}</p> */}
                     </div>
                     <div className="row">
                         <div className="col-md-6">
                             <h3>Winners</h3>
-                            <div className="row align-items-center"><div className={this.classStyle('w1')}></div>{this.props.fightData && this.props.fightData.w1_name}</div>
-                            <div className="row align-items-center"><div className={this.classStyle('w2')}></div>{this.props.fightData && this.props.fightData.w2_name}</div>
-                            <div className="row align-items-center"><div className={this.classStyle('w3')}></div>{this.props.fightData && this.props.fightData.w3_name}</div>
-                            <div className="row align-items-center"><div className={this.classStyle('w4')}></div>{this.props.fightData && this.props.fightData.w4_name}</div>
-                            <div className="row align-items-center"><div className={this.classStyle('w5')}></div>{this.props.fightData && this.props.fightData.w5_name}</div>
+                            {this.renderCharacter('w1')}
+                            {this.renderCharacter('w2')}
+                            {this.renderCharacter('w3')}
+                            {this.renderCharacter('w4')}
+                            {this.renderCharacter('w5')}
                         </div>
                         <div className="col-md-6">
                             <h3>Losers</h3>
-                            <div className="row align-items-center"><div className={this.classStyle('l1')}></div>{this.props.fightData && this.props.fightData.l1_name}</div>
-                            <div className="row align-items-center"><div className={this.classStyle('l2')}></div>{this.props.fightData && this.props.fightData.l2_name}</div>
-                            <div className="row align-items-center"><div className={this.classStyle('l3')}></div>{this.props.fightData && this.props.fightData.l3_name}</div>
-                            <div className="row align-items-center"><div className={this.classStyle('l4')}></div>{this.props.fightData && this.props.fightData.l4_name}</div>
-                            <div className="row align-items-center"><div className={this.classStyle('l5')}></div>{this.props.fightData && this.props.fightData.l5_name}</div>
+                            {this.renderCharacter('l1')}
+                            {this.renderCharacter('l2')}
+                            {this.renderCharacter('l3')}
+                            {this.renderCharacter('l4')}
+                            {this.renderCharacter('l5')}
                         </div>
                     </div>
                 </div>
