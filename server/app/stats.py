@@ -65,3 +65,20 @@ def getCharacterStats(fightList, charName):
 
     # print(results)
     return results
+
+def getCharacterBffs(fightList, charName):
+    """return the 'nemesis' and 'bff' of a character (most common enemy/ally)"""
+    fights = pd.DataFrame(fightList)
+
+    # True/False column to know if target character on winning team
+    fights['won'] = (
+        fights['w1_name'].str.contains(charName, case=False) |
+        fights['w2_name'].str.contains(charName, case=False) |
+        fights['w3_name'].str.contains(charName, case=False) |
+        fights['w4_name'].str.contains(charName, case=False) |
+        fights['w5_name'].str.contains(charName, case=False)
+        )
+    
+    # now need to split these up into a list of allies and list of enemies:
+    temp = fights[fights['won'] == True] # all fights with player on WINNERS
+    # TODO: continue here...
