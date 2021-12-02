@@ -1,3 +1,4 @@
+from collections import defaultdict
 import pandas as pd
 
 # take a list of fights and a target character and return dict of stat results
@@ -63,22 +64,32 @@ def getCharacterStats(fightList, charName):
     results['AllDTotal'] = int(len(defs))
     results['AllDWins'] = int(defs['won'].sum())
 
+    # ---- look at teammates/enemies ----
+    wonFights = fights[fights['won']] # all fights with player on WINNERS team
+    lostFights = fights[~fights['won']] # all fights with player on LOSERS team
+
+    # lists of teammates/enemies
+    winTeammates = wonFights[['w1_name', 'w2_name', 'w3_name', 'w4_name', 'w5_name']]
+    loseTeammates = lostFights[['l1_name', 'l2_name', 'l3_name', 'l4_name', 'l5_name']]
+    allTeammates = pd.concat([winTeammates, loseTeammates], axis=1)
+    winEnemies = wonFights[['l1_name', 'l2_name', 'l3_name', 'l4_name', 'l5_name']]
+    loseEnemies = lostFights[['w1_name', 'w2_name', 'w3_name', 'w4_name', 'w5_name']]
+    allEnemies = pd.concat([winEnemies, loseEnemies], axis=1)
+
+    # flatten to one column
+    allTeammates = allTeammates.stack().reset_index()[0]
+    winEnemies = winEnemies.stack().reset_index()[0]
+    loseEnemies = loseEnemies.stack().reset_index()[0]
+    allEnemies = allEnemies.stack().reset_index()[0]
+
+    # get most common teammate/enemy stats
+    # TODO: need to handle the error if the character does not have that many teammates/enemies lol
+    # TODO: need to make the returned enemies/teammates more consistent -- curently inconsistent when there are multiple characters with the exact same number of occurances
+    dd = defaultdict(list)
+    results['most common allies'] = allTeammates.value_counts()[1:4].to_dict(dd)
+    results['most common enemies'] = allEnemies.value_counts()[0:3].to_dict(dd)
+    results['most often beat'] = winEnemies.value_counts()[0:3].to_dict(dd)
+    results['most often beaten by'] = loseEnemies.value_counts()[0:3].to_dict(dd)
+
     # print(results)
     return results
-
-def getCharacterBffs(fightList, charName):
-    """return the 'nemesis' and 'bff' of a character (most common enemy/ally)"""
-    fights = pd.DataFrame(fightList)
-
-    # True/False column to know if target character on winning team
-    fights['won'] = (
-        fights['w1_name'].str.contains(charName, case=False) |
-        fights['w2_name'].str.contains(charName, case=False) |
-        fights['w3_name'].str.contains(charName, case=False) |
-        fights['w4_name'].str.contains(charName, case=False) |
-        fights['w5_name'].str.contains(charName, case=False)
-        )
-    
-    # now need to split these up into a list of allies and list of enemies:
-    temp = fights[fights['won'] == True] # all fights with player on WINNERS
-    # TODO: continue here...

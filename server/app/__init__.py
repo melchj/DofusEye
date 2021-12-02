@@ -47,30 +47,6 @@ def create_app():
         )
 
         result = getCharacterStats(schema_fights.dump(queryResult), character_name)
-        
-        # result = {
-        #     # full 5v5 fights (attacks and defs)
-        #     '5v5Total': 50,
-        #     '5v5Wins': 50,
-        #     # all XvY fights (attacks and defs)
-        #     'AllTotal': 50,
-        #     'AllWins': 50,
-        #     # 5v5 attacks
-        #     '5v5ATotal': 20,
-        #     '5v5AWins': 20,
-        #     # XvY attacks
-        #     'AllATotal': 20,
-        #     'AllAWins': 20,
-        #     # 5v5 defs
-        #     '5v5DTotal' : 30,
-        #     '5v5DWins' : 30,
-        #     # XvY defs
-        #     'AllDTotal': 20,
-        #     'AllDWins': 20,
-        #     # other
-        #     'nemesis': 'some-player',
-        #     'bestFriend': 'someone-else'
-        # }
         return jsonify(result)
 
     # ---- fights endpoints ----
