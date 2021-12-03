@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, abort
 from sqlalchemy import or_
 
 from app.stats import getCharacterStats
+from app.stats import getCharacterClass
 
 # TODO: request parser type thing? to better return errors when request doesnt include required info?
 # see:
@@ -24,6 +25,40 @@ def create_app():
     # import marshmallow schema, attach app
     from app.schema import ma, schema_alias, schema_fight, schema_fights, schema_aliases
     ma.init_app(app)
+
+    # ---- misc endpoints ----
+    @app.route('/api/info/characters/<string:character_name>', methods=['GET'])
+    def endpointCharacterInfo(character_name):
+        """
+        returns some info about the character
+        """
+        # TODO: for now, just returns the class. need to add more info later
+        # TODO: add support for if the character has changed class (return multiple values?)
+
+        # get all fights this char is in:
+        # TODO: this query is copy/pasted... need to refactor into it's own function
+        # TODO: need to filter out results that come from testing channels. see discord bot query
+        queryResult = db.session.query(Fight).filter(
+            or_(
+                Fight.w1_name.like(character_name),
+                Fight.w2_name.like(character_name),
+                Fight.w3_name.like(character_name),
+                Fight.w4_name.like(character_name),
+                Fight.w5_name.like(character_name),
+                Fight.l1_name.like(character_name),
+                Fight.l2_name.like(character_name),
+                Fight.l3_name.like(character_name),
+                Fight.l4_name.like(character_name),
+                Fight.l5_name.like(character_name)
+            )
+        )
+
+        charClass = getCharacterClass(schema_fights.dump(queryResult), character_name)
+
+        result = dict()
+        result['charName'] = character_name
+        result['class'] = charClass
+        return jsonify(result)
 
     # ---- stats endpoints ----
     @app.route('/api/stats/characters/<string:character_name>', methods=['GET'])

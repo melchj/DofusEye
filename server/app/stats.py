@@ -93,3 +93,22 @@ def getCharacterStats(fightList, charName):
 
     # print(results)
     return results
+
+def getCharacterClass(fightList, charName):
+    """
+    returns the class(es) of the character
+    """
+    fights = pd.DataFrame(fightList)
+
+    classes = pd.Series()
+    for p in ['w1', 'w2', 'w3', 'w4', 'w5', 'l1', 'l2', 'l3', 'l4', 'l5']:
+        temp = fights[fights[f'{p}_name'].str.contains(charName, case=False, na=False)][f"{p}_class"]
+        classes = classes.append(temp)
+    # print(classes)
+
+    # print(classes.value_counts())
+    # print(classes.value_counts().index[0])
+
+    # TODO: need to support multiple classes
+    # returns the most common class in the series
+    return classes.value_counts().index[0]
