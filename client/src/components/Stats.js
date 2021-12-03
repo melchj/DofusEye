@@ -1,5 +1,6 @@
 import React from 'react'
 import { getBasicCharacterStats } from '../services/FightService';
+import './Fight.css'
 // import './Stats.css'
 
 class Stats extends React.Component {
@@ -34,7 +35,15 @@ class Stats extends React.Component {
         return (
             <div className="card text-dark bg-light mt-3">
                 <div className="card-body">
-                    <h2>Stats for {this.props.characterName}</h2>
+                    <div className="row">
+                        <div className="text-center">
+                            <h2>{this.props.characterName}</h2>
+                            {this.state.characterStats && (
+                                <div className={"class-icon class-" + this.state.characterStats['charClass']}></div>
+                            )}
+                        </div>
+                    </div>
+
                     <div className="row">
                         <div className='col'>
                             <h3>All Fights:</h3>
