@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, send_file
 from sqlalchemy import or_
 
 from app.stats import getCharacterStats
@@ -116,6 +116,17 @@ def create_app():
         else:
             f = Fight.query.all()
             return jsonify(schema_fights.dump(f))
+
+    # ---- screenshot endpoint(s) ----
+    @app.route('/api/fights/<int:id>/image', methods=['GET'])
+    def getFightImage(id):
+        f = Fight.query.get(id) # query.get() gets the entry by primary key
+        fight = schema_fight.dump(f)
+        path = fight['file_path']
+
+        # TODO: add check that file exists
+
+        return send_file(path)
 
     # ---- fightIDs endpoints ----
     @app.route('/api/fightids/characters/<string:character_name>', methods=['GET'])
