@@ -50,3 +50,13 @@ export async function getBasicCharacterStats(character_name) {
         console.log(error)
     }
 }
+
+export async function getFightImage(fightID) {
+    try {
+        const response = await axios.get('/api/fights/'+fightID+'/image');
+        // return response.data;
+        return response.config.url
+    } catch (error) {
+        console.log(error)
+    }
+}

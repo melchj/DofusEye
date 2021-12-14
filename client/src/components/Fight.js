@@ -1,7 +1,17 @@
 import React from 'react'
+import Modal from "react-bootstrap/Modal"
+import { getFightImage } from '../services/FightService';
 import './Fight.css'
 
 class Fight extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            modalOpen: false,
+            image: null,
+        };
+    }
+
     classStyle = (pos) => {
         const p = pos+"_class";
         const cl = this.props.fightData && (" class-"+this.props.fightData[p]);
@@ -38,6 +48,26 @@ class Fight extends React.Component {
         return null;
     }
 
+    showModal() {
+        this.setState({modalOpen: true})
+
+        // if we haven't fetched the image, get it from the server
+        if (this.props.fightData && this.state.image == null) {
+            getFightImage(this.props.fightData.fight_id)
+            .then((resp) => {
+                this.setState({image: resp});
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        }
+    }
+
+    hideModal() {
+        this.setState({modalOpen: false})
+        // TODO: delete the image from state? for memory usage or something?
+    }
+
     render() {
         return (
             <div className="card text-dark bg-light mt-3">
@@ -64,7 +94,20 @@ class Fight extends React.Component {
                             {this.renderCharacter('l5')}
                         </div>
                     </div>
+                    <div className='row'>
+                        <button className="btn btn-primary" onClick={this.showModal.bind(this)}>screenshot</button>
+                    </div>
                 </div>
+
+                <Modal show={this.state.modalOpen} onHide={this.hideModal.bind(this)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Modal heading</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <img src={this.state.image} className='img-fluid'/>
+                    </Modal.Body>
+                    <Modal.Footer>This is the footer</Modal.Footer>
+                </Modal>
             </div>
         );
     }
