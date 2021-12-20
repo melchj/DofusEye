@@ -38,7 +38,13 @@ $ pip install -r requirements.txt
 
 TODO: need to write this section...
 
-#### 3. start backend server
+#### 3. set up environment configs
+
+rename '.flaskenv_dist' to '.flaskenv'.
+
+open that file and put in there your SECRET_KEY and any other configs...
+
+#### 4. start backend server
 (https://flask.palletsprojects.com/en/2.0.x/quickstart/)
 
 (from server directory, in virtual environment)
