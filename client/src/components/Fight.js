@@ -100,7 +100,7 @@ class Fight extends React.Component {
                         </div>
                     </div>
                     <div className='row'>
-                        <button className="btn btn-primary" onClick={this.showModal.bind(this)}>screenshot</button>
+                        <button className="btn btn-secondary" onClick={this.showModal.bind(this)}>See Details</button>
                     </div>
                 </div>
 
@@ -140,7 +140,7 @@ class Fight extends React.Component {
                                 </div>
                             </div>
                             <div className='row'>
-                                <button className="btn btn-danger" onClick={this.correctFight.bind(this)}>Make Correction</button>
+                                <button className="btn btn-danger" onClick={this.correctFight.bind(this)}>Make Corrections</button>
                             </div>
                         </div>
                     </Modal.Body>
