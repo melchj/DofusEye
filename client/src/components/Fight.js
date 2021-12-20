@@ -68,6 +68,11 @@ class Fight extends React.Component {
         // TODO: delete the image from state? for memory usage or something?
     }
 
+    correctFight() {
+        // TODO: implement this once there is a fight correction page
+        alert("not yet implemented :(")
+    }
+
     render() {
         return (
             <div className="card text-dark bg-light mt-3">
@@ -99,14 +104,47 @@ class Fight extends React.Component {
                     </div>
                 </div>
 
-                <Modal show={this.state.modalOpen} onHide={this.hideModal.bind(this)}>
+                <Modal
+                    show={this.state.modalOpen}
+                    onHide={this.hideModal.bind(this)}
+                    dialogClassName="modal-75w"
+                >
                     <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title><h2>Fight ID: {this.props.fightData && this.props.fightData.fight_id}</h2></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <img src={this.state.image} className='img-fluid'/>
+                        <div>
+                            <div className="row">
+                                <img src={this.state.image} className='img-fluid'/>
+                            </div>
+                            {/* <div className="row"> */}
+                                {/* <h2 className="card-title"></h2> */}
+                                {/* <p>{this.props.fightData.date}</p> */}
+                            {/* </div> */}
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <h3>Winners</h3>
+                                    {this.renderCharacter('w1')}
+                                    {this.renderCharacter('w2')}
+                                    {this.renderCharacter('w3')}
+                                    {this.renderCharacter('w4')}
+                                    {this.renderCharacter('w5')}
+                                </div>
+                                <div className="col-md-6">
+                                    <h3>Losers</h3>
+                                    {this.renderCharacter('l1')}
+                                    {this.renderCharacter('l2')}
+                                    {this.renderCharacter('l3')}
+                                    {this.renderCharacter('l4')}
+                                    {this.renderCharacter('l5')}
+                                </div>
+                            </div>
+                            <div className='row'>
+                                <button className="btn btn-danger" onClick={this.correctFight.bind(this)}>Make Correction</button>
+                            </div>
+                        </div>
                     </Modal.Body>
-                    <Modal.Footer>This is the footer</Modal.Footer>
+                    {/* <Modal.Footer>This is the footer</Modal.Footer> */}
                 </Modal>
             </div>
         );

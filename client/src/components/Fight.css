@@ -94,3 +94,8 @@
 .class-ougi {
     background-position: 0 -965px;
 }
+
+.modal-75w{
+    width: 75%;
+    max-width: none !important;
+}
