@@ -8,7 +8,11 @@ import axios from 'axios';
 
 export async function getFight(fight_id) {
     try {
-        const response = await axios.get('/api/fights/'+fight_id);
+        const response = await axios.get('/api/fights/'+fight_id, {
+            headers: {
+                'x-api-key': process.env.REACT_APP_API_KEY
+            }
+        });
         return response.data;
     } catch (error) {
         console.log(error)
@@ -17,7 +21,11 @@ export async function getFight(fight_id) {
 
 export async function getFightsByCharacter(character_name) {
     try {
-        const response = await axios.get('/api/fights/characters/'+character_name);
+        const response = await axios.get('/api/fights/characters/'+character_name, {
+            headers: {
+                'x-api-key': process.env.REACT_APP_API_KEY
+            }
+        });
         return response.data;
     } catch (error) {
         console.log(error)
@@ -26,7 +34,11 @@ export async function getFightsByCharacter(character_name) {
 
 export async function getFightsList(fightIDs) {
     try {
-        const response = await axios.get('/api/fights?ids='+fightIDs.join());
+        const response = await axios.get('/api/fights?ids='+fightIDs.join(), {
+            headers: {
+                'x-api-key': process.env.REACT_APP_API_KEY
+            }
+        });
         return response.data;
     } catch (error) {
         console.log(error)
@@ -35,7 +47,11 @@ export async function getFightsList(fightIDs) {
 
 export async function getFightIDsByCharacter(character_name) {
     try {
-        const response = await axios.get('/api/fightids/characters/'+character_name);
+        const response = await axios.get('/api/fightids/characters/'+character_name, {
+            headers: {
+                'x-api-key': process.env.REACT_APP_API_KEY
+            }
+        });
         return response.data;
     } catch (error) {
         console.log(error)
@@ -44,7 +60,11 @@ export async function getFightIDsByCharacter(character_name) {
 
 export async function getBasicCharacterStats(character_name) {
     try {
-        const response = await axios.get('/api/stats/characters/'+character_name);
+        const response = await axios.get('/api/stats/characters/'+character_name, {
+            headers: {
+                'x-api-key': process.env.REACT_APP_API_KEY
+            }
+        });
         return response.data;
     } catch (error) {
         console.log(error)
@@ -53,7 +73,7 @@ export async function getBasicCharacterStats(character_name) {
 
 export async function getFightImage(fightID) {
     try {
-        const response = await axios.get('/api/fights/'+fightID+'/image');
+        const response = await axios.get('/api/fights/'+fightID+'/image?key='+process.env.REACT_APP_API_KEY);
         // return response.data;
         return response.config.url
     } catch (error) {

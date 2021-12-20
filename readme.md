@@ -64,3 +64,7 @@ do `npm start` to start the front end server. then navigate to `http://localhost
 
 
 using axios for http requests (will be installed with other dependancies automatically)
+
+-----
+
+also, you gotta rename 'client/.env_dist' to 'client/.env', and then paste the API key inside this file. This makes sure the front end can tell the server that it is authorized to make requests.
