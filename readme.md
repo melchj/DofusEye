@@ -40,9 +40,13 @@ TODO: need to write this section...
 
 #### 3. set up environment configs
 
-rename '.flaskenv_dist' to '.flaskenv'.
+Rename '.flaskenv_dist' to '.flaskenv', either manually or by executing the following (in the server directory).
 
-open that file and put in there your SECRET_KEY and any other configs...
+```bash
+cp .flaskenv_dist .flaskenv
+```
+
+Next, open `.flaskenv` and put in there your SECRET_KEY and any other config settings.
 
 #### 4. start backend server
 (https://flask.palletsprojects.com/en/2.0.x/quickstart/)
@@ -54,17 +58,14 @@ flask run
 
 ## Front end
 
-need node.js installed.
+Ensure node.js is installed on the system.
 
 navigate to ./client
 
+Rename 'client/.env_dist' to 'client/.env', and then paste the API key (from server/.flaskenv) inside this file. This makes sure the front end can tell the server that it is authorized to make requests.
+
 do `npm start` to start the front end server. then navigate to `http://localhost:3000`.
 
-...
 
 
 using axios for http requests (will be installed with other dependancies automatically)
-
------
-
-also, you gotta rename 'client/.env_dist' to 'client/.env', and then paste the API key inside this file. This makes sure the front end can tell the server that it is authorized to make requests.
