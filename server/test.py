@@ -24,7 +24,8 @@ def reqGet(endpoint:str, query:str=''):
     response = requests.get(url, headers={"x-api-key" : os.environ.get('SECRET_KEY')})
     print(response)
     if response.ok:
-        print(response.json())
+        # print(response.json())
+        return response.json()
 
 def reqPost(endpoint:str, query:str=''):
     url = BASE + endpoint
@@ -34,20 +35,20 @@ def reqPost(endpoint:str, query:str=''):
     response = requests.post(url, headers={"x-api-key" : os.environ.get('SECRET_KEY')})
     print(response)
     if response.ok:
-        print(response.json())
+        # print(response.json())
+        return response.json()
 
 reqGet('/api/')
 # reqGet('/api/aliases')
 reqGet('/api/aliases','name=celunt')
 
 
-reqPost('/api/aliases', 'account_name=atest&character_name=ctest')
+# reqPost('/api/aliases', 'account_name=atest&character_name=ctest')
 reqGet('/api/aliases', 'name=ctest')
-
 
 reqGet('/api/fights/333')
 reqGet('/api/fights', 'ids=33,25,366,453')
 
-reqGet('/api/fightids/character/celunt')
-reqGet('/api/fights/character/celunt')
+reqGet('/api/fightids/characters/celunt')
+reqGet('/api/fights/characters/celunt')
 
