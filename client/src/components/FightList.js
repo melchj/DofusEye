@@ -29,7 +29,8 @@ class FightList extends React.Component {
             return;
         }
 
-        // call API to get a list of fight data to put in this.state, which is passed to child Fight components
+        // call API to get a list of fight data to put in this.state,
+        // which is passed to child Fight components (component and sub components re-rendered when state updates)
         getFightsList(this.props.fightIDs)
         .then((resp) => {
             this.setState({fightDatas: resp});
@@ -46,14 +47,15 @@ class FightList extends React.Component {
         }
 
         return (
+            // TODO: here we want to sort so that fight_id is in descending order...
             this.state.fightDatas.map((fightData, index) => {
                 // console.log('rendering Fight index: '+index);
                 // console.log(fightData['fight_id']);
                 return (
-                    <div className="col-md-6" key={fightData['fight_id']}>
-                        <Fight fightData={this.state.fightDatas && this.state.fightDatas[index]}/>
+                    <div className="col-md-6" key={fightData.fight_id}>
+                        <Fight fightData={fightData}/>
                     </div>
-                    );
+                );
             })
         );
     }

@@ -161,7 +161,7 @@ class Stats extends React.Component {
                             <p>(most common allies)</p>
                             <ul>
                                 {this.state.characterStats && Object.keys(this.state.characterStats['most common allies']).map((key, i) => (
-                                    <li>{key}, {this.state.characterStats['most common allies'][key]}</li>
+                                    <li key={i}>{key}, {this.state.characterStats['most common allies'][key]}</li>
                                 ))}
                             </ul>
                         </div>
@@ -170,7 +170,7 @@ class Stats extends React.Component {
                             <p>(most common enemies)</p>
                             <ul>
                                 {this.state.characterStats && Object.keys(this.state.characterStats['most common enemies']).map((key, i) => (
-                                    <li>{key}, {this.state.characterStats['most common enemies'][key]}</li>
+                                    <li key={i}>{key}, {this.state.characterStats['most common enemies'][key]}</li>
                                 ))}
                             </ul>
                         </div>
@@ -181,7 +181,7 @@ class Stats extends React.Component {
                             <h3>Most Wins vs:</h3>
                             <ul>
                                 {this.state.characterStats && Object.keys(this.state.characterStats['most often beat']).map((key, i) => (
-                                    <li>{key}, {this.state.characterStats['most often beat'][key]}</li>
+                                    <li key={i}>{key}, {this.state.characterStats['most often beat'][key]}</li>
                                 ))}
                             </ul>
                         </div>
@@ -189,7 +189,7 @@ class Stats extends React.Component {
                             <h3>Most Losses vs:</h3>
                             <ul>
                                 {this.state.characterStats && Object.keys(this.state.characterStats['most often beaten by']).map((key, i) => (
-                                    <li>{key}, {this.state.characterStats['most often beaten by'][key]}</li>
+                                    <li key={i}>{key}, {this.state.characterStats['most often beaten by'][key]}</li>
                                 ))}
                             </ul>
                         </div>
