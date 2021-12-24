@@ -46,11 +46,12 @@ class FightList extends React.Component {
             return null;
         }
 
+        // take this.state.fightDatas and put into array, and sort (order) it. want fights listed in high->low fight ID order
+        const sortedFightDatas = [].concat(this.state.fightDatas)
+            .sort((a, b) => b.fight_id - a.fight_id)
+
         return (
-            // TODO: here we want to sort so that fight_id is in descending order...
-            this.state.fightDatas.map((fightData, index) => {
-                // console.log('rendering Fight index: '+index);
-                // console.log(fightData['fight_id']);
+            sortedFightDatas.map((fightData, index) => {
                 return (
                     <div className="col-md-6" key={fightData.fight_id}>
                         <Fight fightData={fightData}/>
