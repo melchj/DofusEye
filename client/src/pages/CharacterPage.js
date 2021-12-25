@@ -25,7 +25,7 @@ export default function CharacterPage() {
             });
 
             // set state to save this list
-            this.setState({fightIDlist: ids});
+            setFightIDs(ids)
         })
         .catch((error) => {
             console.log(error);
@@ -36,22 +36,16 @@ export default function CharacterPage() {
     }
 
     return (
-        // <div>
-        //     <CharacterQuery
-        //         onClickHandler={updateFightIDs}
-        //         // onClickHandler={this.updateFightIDs.bind(this)}
-        //     />
-        //     <Stats
-        //         // characterName={this.state.characterName}
-        //         characterName={characterName}
-        //     />
-        //     <FightList
-        //         // fightIDs={this.state.fightIDlist}
-        //         fightIDs={fightIDlist}
-        //     />
-        // </div>
         <div>
-            this is the character page
+            <CharacterQuery
+                onClickHandler={updateFightIDs}
+            />
+            <Stats
+                characterName={characterName}
+            />
+            <FightList
+                fightIDs={fightIDlist}
+            />
         </div>
     );
 }

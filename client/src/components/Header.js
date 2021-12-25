@@ -1,18 +1,18 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+// import './Header.css';
 
 export const Header = () => {
-    const headerStyle = {
-        width: '100%',
-        padding: '2%',
-        backgroundColor: '#2fd854',
-        color: 'white',
-        textAlign: 'center',
-        fontWeight: 'bold'
-    }
 
     return(
-        <div style={headerStyle}>
-            <h1>Dofus Eye</h1>
-        </div>
+        <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+            <div className='container-fluid'>
+                <Link to='/' className='navbar-brand'>DofusEye</Link>
+                <div className='navbar-nav'>
+                    <Link to='/character' className='nav-link'>Characters</Link>
+                    <Link to='/account' className='nav-link'>Accounts</Link>
+                </div>
+            </div>
+        </nav>
     );
 }
