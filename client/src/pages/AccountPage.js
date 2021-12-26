@@ -4,7 +4,7 @@ export default function AccountPage() {
 
     return (
         <div>
-            this is the account page
+            account page not yet implemented
         </div>
     );
 }

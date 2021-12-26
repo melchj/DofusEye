@@ -5,14 +5,17 @@ import { Link } from 'react-router-dom';
 export const Header = () => {
 
     return(
-        <nav className='navbar navbar-expand-lg navbar-light bg-light'>
-            <div className='container-fluid'>
-                <Link to='/' className='navbar-brand'>DofusEye</Link>
-                <div className='navbar-nav'>
-                    <Link to='/character' className='nav-link'>Characters</Link>
-                    <Link to='/account' className='nav-link'>Accounts</Link>
+        <div>
+            <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+                <div className='container-fluid'>
+                    <Link to='/' className='navbar-brand'>DofusEye</Link>
+                    <div className='navbar-nav'>
+                        <Link to='/character' className='nav-link'>Characters</Link>
+                        <Link to='/account' className='nav-link'>Accounts</Link>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+            this website is a super unfinished and experimental project, keep this in mind :D
+        </div>
     );
 }

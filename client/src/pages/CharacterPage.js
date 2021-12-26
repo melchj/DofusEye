@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import CharacterQuery from '../components/CharacterQuery';
 import FightList from '../components/FightList';
-import { Header } from '../components/Header';
 import Stats from '../components/Stats';
 import { getFightIDsByCharacter } from '../services/FightService';
 
 export default function CharacterPage() {
     const [fightIDlist, setFightIDs] = useState([]);
     const [characterName, setCharacterName] = useState('');
+    const { name } = useParams();
+
+    // this will act the same as didComponentMount() would for class components, because of that empty array []
+    // triggers when component loads
+    useEffect(() => {
+        updateFightIDs(name)
+    }, []);
 
     const updateFightIDs = (character_name) => {
         // ignore if empty string
@@ -31,7 +38,7 @@ export default function CharacterPage() {
             console.log(error);
         });
 
-        // update the Stats component
+        // update the Stats component (but setting the character name in this component's state)
         setCharacterName(character_name);
     }
 
