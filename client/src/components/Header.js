@@ -8,7 +8,10 @@ export const Header = () => {
         <div>
             <nav className='navbar navbar-expand-lg navbar-light bg-light'>
                 <div className='container-fluid'>
-                    <Link to='/' className='navbar-brand'>DofusEye</Link>
+                    <Link to='/' className='navbar-brand'>
+                        <img src="../res/skull.png" alt="" width="30" height="24" class="d-inline-block align-text-top"/>
+                        DofusEye
+                    </Link>
                     <div className='navbar-nav'>
                         <Link to='/character' className='nav-link'>Characters</Link>
                         <Link to='/account' className='nav-link'>Accounts</Link>
