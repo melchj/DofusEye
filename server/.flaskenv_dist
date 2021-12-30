@@ -1,4 +1,4 @@
 FLASK_APP=app
 FLASK_ENV=development
-DATABASE_URL=sqlite:///main.db
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/dofuseye
 SECRET_KEY=putYourKeyHere

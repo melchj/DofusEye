@@ -10,8 +10,10 @@ backend/api uses:
 
 to attempt to build a restful api.
 
-## Backend
-#### 1. Virtual Environment
+# Backend
+first, rename server/.flaskenv_dist to server/.flaskenv. same for client/.env_dist to client/.env
+
+## 1. Virtual Environment
 
 start virtual environment:
 ```bash
@@ -34,17 +36,29 @@ $ cd ./server/
 $ pip install -r requirements.txt
 ```
 
-#### 2. initialize the database
+## 2. initialize the database
 
-TODO: need to write this section...
+1. Ensure postgres is installed and working on the system.
+2. In a psql terminal, create the postgres database, name it "dofuseye"
 
-#### 3. set up environment configs
+```sql
+CREATE DATABASE dofuseye;
+```
+3. In `.flaskenv`, set the `DATABASE_URL` to the following, substituting in the postgres role username and password as appropriate: `postgresql://[username]:[password]@localhost:5432/dofuseye` (get rid of the square brakets too)
+4. Execute the following commands to initialize the databse:
+```bash
+flask db init
+flask db migrate
+flask db upgrade
+```
+
+## 3. set up environment configs
 
 rename '.flaskenv_dist' to '.flaskenv'.
 
 open that file and put in there your SECRET_KEY and any other configs...
 
-#### 4. start backend server
+## 4. start backend server
 (https://flask.palletsprojects.com/en/2.0.x/quickstart/)
 
 (from server directory, in virtual environment)
@@ -52,7 +66,7 @@ open that file and put in there your SECRET_KEY and any other configs...
 flask run
 ```
 
-## Front end
+# Front end
 
 need node.js installed.
 

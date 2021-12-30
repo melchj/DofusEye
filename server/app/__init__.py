@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, abort, send_file
+from flask_migrate import Migrate
 from sqlalchemy import or_
 from functools import wraps
-
 from app.stats import getCharacterStats
 from app.stats import getCharacterClass
 
@@ -38,6 +38,9 @@ def create_app():
     # import SQLalchemy models and db, attach app to db
     from app.database.database import db, Fight, Alias
     db.init_app(app)
+
+    # create migrate object to handle creation/migration/upgrade of db
+    migrate = Migrate(app, db)
 
     # import marshmallow schema, attach app
     from app.schema import ma, schema_alias, schema_fight, schema_fights, schema_aliases
