@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 class CharacterQuery extends React.Component {
     constructor(props) {
@@ -18,7 +19,6 @@ class CharacterQuery extends React.Component {
         });
     }
 
-
     render() {
         return (
             // input-group mb-3 
@@ -34,7 +34,11 @@ class CharacterQuery extends React.Component {
                         />
                 </div>
                 <div className="col-auto">
-                    <button type="submit" onClick={this.onQuery.bind(this)} className="btn btn-primary mb-3">Go!</button>
+                    <Link to={'/character/'+this.state.characterName}>
+                        {/* TODO: is this the right way to do this? kind of seems redundant to Link and to update via passed function */}
+                        <button type="submit" onClick={this.onQuery.bind(this)} className="btn btn-primary mb-3">Go!</button>
+                        {/* <button type="submit" className="btn btn-primary mb-3">Go!</button> */}
+                    </Link>
                 </div>
             </div>
         );

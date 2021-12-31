@@ -46,12 +46,9 @@ def create_app():
     from app.schema import ma, schema_alias, schema_fight, schema_fights, schema_aliases
     ma.init_app(app)
 
-    # ---- stats endpoints ----
-    @app.route('/api/stats/characters/<string:character_name>', methods=['GET'])
-    @require_apikey
-    def endpointCharacterStats(character_name):
-        # get all fights this char is in:
-        # TODO: this query is copy/pasted... need to refactor into it's own function
+    # query function(s)
+    def queryFightsbyCharacter(character_name):
+        """returns query results of all fights with this character name."""
         # TODO: need to filter out results that come from testing channels. see discord bot query
         queryResult = db.session.query(Fight).filter(
             or_(
@@ -67,6 +64,14 @@ def create_app():
                 Fight.l5_name.ilike(character_name)
             )
         )
+        return queryResult
+
+    # ---- stats endpoints ----
+    @app.route('/api/stats/characters/<string:character_name>', methods=['GET'])
+    @require_apikey
+    def endpointCharacterStats(character_name):
+        # query all fights this char is in
+        queryResult = queryFightsbyCharacter(character_name)
 
         fightsList = schema_fights.dump(queryResult)
 
@@ -91,21 +96,7 @@ def create_app():
     @require_apikey
     def getFightByCharacter(character_name):
         """returns all the fights that this character is in. or 404 if none found."""
-        result = db.session.query(Fight).filter(
-            or_(
-                Fight.w1_name.ilike(character_name),
-                Fight.w2_name.ilike(character_name),
-                Fight.w3_name.ilike(character_name),
-                Fight.w4_name.ilike(character_name),
-                Fight.w5_name.ilike(character_name),
-                Fight.l1_name.ilike(character_name),
-                Fight.l2_name.ilike(character_name),
-                Fight.l3_name.ilike(character_name),
-                Fight.l4_name.ilike(character_name),
-                Fight.l5_name.ilike(character_name)
-            )
-        )
-        # TODO: need to filter out results that come from testing channels. see discord bot query
+        result = queryFightsbyCharacter(character_name)
         if result:
             return jsonify(schema_fights.dump(result))
         else:
@@ -114,11 +105,13 @@ def create_app():
     @app.route('/api/fights', methods=['GET'])
     @require_apikey
     def getFights():
-        """returns all fights or just those with given ID(s), if specified.
+        """
+        returns all fights or just those with given ID(s), if specified.
         parameters:
             none - returns all fights in DB
             id - returns fight with given id
-            ids - should be comma separated numbers (e.g. '?ids=12,55,213'). returns all fights listed."""
+            ids - should be comma separated numbers (e.g. '?ids=12,55,213'). returns all fights listed.
+        """
         id = request.args.get('id')
         ids = request.args.get('ids')
 
@@ -161,6 +154,8 @@ def create_app():
         """
         returns a list of ints: the fight IDs for all fights that the character is in.
         """
+        # TODO: figure out if there is a way to use queryFightsbyCharacter fct and then extract just the Fight.fight_id's?
+        # that way we don't need to duplicate query code and such
         result = db.session.query(Fight.fight_id).filter(
             or_(
                 Fight.w1_name.ilike(character_name),

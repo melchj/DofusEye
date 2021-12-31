@@ -69,16 +69,25 @@ flask run
 
 # Front end
 
-need node.js installed.
+Ensure node.js is installed on the system.
+
+Rename 'client/.env_dist' to 'client/.env', and then paste the API key (from server/.flaskenv) inside this file. This makes sure the front end can tell the server that it is authorized to make requests.
 
 navigate to ./client
 
-do `npm start` to start the front end server. then navigate to `http://localhost:3000`.
+install node packages
+```bash
+npm install
+```
 
-...
+start the front end:
 
+```bash
+npm start
+```
 
-using axios for http requests (will be installed with other dependancies automatically)
+Now you can navigate to `http://localhost:3000`.
+
 
 ---
 ## Database Data Population
