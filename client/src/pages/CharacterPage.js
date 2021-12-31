@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import CharacterQuery from '../components/CharacterQuery';
 import FightList from '../components/FightList';
 import Stats from '../components/Stats';
 import { getFightIDsByCharacter } from '../services/FightService';
 
-export default function CharacterPage() {
+const CharacterPage = () => {
     const [fightIDlist, setFightIDs] = useState([]);
     const [characterName, setCharacterName] = useState('');
     const { name } = useParams();
 
-    // this will act the same as didComponentMount() would for class components, because of that empty array []
+    const navigate = useNavigate();
+    const location = useLocation();
+
     // triggers when component loads
+    // useEffect(() => {
+    //     updateFightIDs(name)
+    // }, []);
+
+    // triggers when route changes, and when component loads
     useEffect(() => {
         updateFightIDs(name)
-    }, []);
+    }, [location]);
 
     const updateFightIDs = (character_name) => {
         // ignore if empty string
@@ -42,10 +49,15 @@ export default function CharacterPage() {
         setCharacterName(character_name);
     }
 
+    const queryClicked = (x) => {
+        console.log(x)
+        navigate('/character/'+x)
+    }
+
     return (
         <div>
             <CharacterQuery
-                onClickHandler={updateFightIDs}
+                onClickHandler={queryClicked}
             />
             <Stats
                 characterName={characterName}
@@ -56,3 +68,5 @@ export default function CharacterPage() {
         </div>
     );
 }
+
+export default CharacterPage;

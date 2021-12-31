@@ -34,11 +34,10 @@ class CharacterQuery extends React.Component {
                         />
                 </div>
                 <div className="col-auto">
-                    <Link to={'/character/'+this.state.characterName}>
-                        {/* TODO: is this the right way to do this? kind of seems redundant to Link and to update via passed function */}
+                    {/* <Link to={'/character/'+this.state.characterName}> */}
                         <button type="submit" onClick={this.onQuery.bind(this)} className="btn btn-primary mb-3">Go!</button>
                         {/* <button type="submit" className="btn btn-primary mb-3">Go!</button> */}
-                    </Link>
+                    {/* </Link> */}
                 </div>
             </div>
         );
