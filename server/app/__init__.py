@@ -55,16 +55,16 @@ def create_app():
         # TODO: need to filter out results that come from testing channels. see discord bot query
         queryResult = db.session.query(Fight).filter(
             or_(
-                Fight.w1_name.like(character_name),
-                Fight.w2_name.like(character_name),
-                Fight.w3_name.like(character_name),
-                Fight.w4_name.like(character_name),
-                Fight.w5_name.like(character_name),
-                Fight.l1_name.like(character_name),
-                Fight.l2_name.like(character_name),
-                Fight.l3_name.like(character_name),
-                Fight.l4_name.like(character_name),
-                Fight.l5_name.like(character_name)
+                Fight.w1_name.ilike(character_name),
+                Fight.w2_name.ilike(character_name),
+                Fight.w3_name.ilike(character_name),
+                Fight.w4_name.ilike(character_name),
+                Fight.w5_name.ilike(character_name),
+                Fight.l1_name.ilike(character_name),
+                Fight.l2_name.ilike(character_name),
+                Fight.l3_name.ilike(character_name),
+                Fight.l4_name.ilike(character_name),
+                Fight.l5_name.ilike(character_name)
             )
         )
 
@@ -93,16 +93,16 @@ def create_app():
         """returns all the fights that this character is in. or 404 if none found."""
         result = db.session.query(Fight).filter(
             or_(
-                Fight.w1_name.like(character_name),
-                Fight.w2_name.like(character_name),
-                Fight.w3_name.like(character_name),
-                Fight.w4_name.like(character_name),
-                Fight.w5_name.like(character_name),
-                Fight.l1_name.like(character_name),
-                Fight.l2_name.like(character_name),
-                Fight.l3_name.like(character_name),
-                Fight.l4_name.like(character_name),
-                Fight.l5_name.like(character_name)
+                Fight.w1_name.ilike(character_name),
+                Fight.w2_name.ilike(character_name),
+                Fight.w3_name.ilike(character_name),
+                Fight.w4_name.ilike(character_name),
+                Fight.w5_name.ilike(character_name),
+                Fight.l1_name.ilike(character_name),
+                Fight.l2_name.ilike(character_name),
+                Fight.l3_name.ilike(character_name),
+                Fight.l4_name.ilike(character_name),
+                Fight.l5_name.ilike(character_name)
             )
         )
         # TODO: need to filter out results that come from testing channels. see discord bot query
@@ -124,7 +124,8 @@ def create_app():
 
         if ids:
             ids = ids.split(',')
-            result = db.session.query(Fight).filter(or_(*[Fight.fight_id.like(_id) for _id in ids]))
+            # result = db.session.query(Fight).filter(or_(*[Fight.fight_id.like(_id) for _id in ids]))
+            result = db.session.query(Fight).filter(or_(*[(Fight.fight_id==_id) for _id in ids]))
             if result:
                 return jsonify(schema_fights.dump(result))
             else:
@@ -162,16 +163,16 @@ def create_app():
         """
         result = db.session.query(Fight.fight_id).filter(
             or_(
-                Fight.w1_name.like(character_name),
-                Fight.w2_name.like(character_name),
-                Fight.w3_name.like(character_name),
-                Fight.w4_name.like(character_name),
-                Fight.w5_name.like(character_name),
-                Fight.l1_name.like(character_name),
-                Fight.l2_name.like(character_name),
-                Fight.l3_name.like(character_name),
-                Fight.l4_name.like(character_name),
-                Fight.l5_name.like(character_name)
+                Fight.w1_name.ilike(character_name),
+                Fight.w2_name.ilike(character_name),
+                Fight.w3_name.ilike(character_name),
+                Fight.w4_name.ilike(character_name),
+                Fight.w5_name.ilike(character_name),
+                Fight.l1_name.ilike(character_name),
+                Fight.l2_name.ilike(character_name),
+                Fight.l3_name.ilike(character_name),
+                Fight.l4_name.ilike(character_name),
+                Fight.l5_name.ilike(character_name)
             )
         )
         # TODO: need to filter out results that come from testing channels. see discord bot query
@@ -193,7 +194,7 @@ def create_app():
             name = request.args.get('name')
             if name:
                 # if name is given with '/aliases?name=character_name', give the alias info of character_name
-                a = Alias.query.filter(Alias.character_name.like(name)).first()
+                a = Alias.query.filter(Alias.character_name.ilike(name)).first()
 
                 if a:
                     return schema_alias.dump(a)
