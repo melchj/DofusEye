@@ -1,47 +1,35 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import InputGroup from "react-bootstrap/InputGroup";
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import { Link, useNavigate } from 'react-router-dom';
 
-class CharacterQuery extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
+const CharacterQuery = () => {
+    const [ characterName, setCharacterName ] = useState('');
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        navigate('/character/'+characterName);
     }
 
-    onQuery() {
-        // console.log(this.state);
-        this.props.onClickHandler(this.state.characterName);
+    const handleInputChange = (e) => {
+        setCharacterName(e.target.value)
     }
 
-    onInputChange(e) {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
-    }
-
-    render() {
-        return (
-            // input-group mb-3 
-            <div className='input-group row g-3'>
-                <div className='col-auto'>
-                    <input
-                        type='text'
-                        className="form-control"
-                        placeholder="Character Name"
-                        aria-label="Character Name"
-                        name="characterName"
-                        onChange={(e) => this.onInputChange(e)}
-                        />
-                </div>
-                <div className="col-auto">
-                    {/* <Link to={'/character/'+this.state.characterName}> */}
-                        <button type="submit" onClick={this.onQuery.bind(this)} className="btn btn-primary mb-3">Go!</button>
-                        {/* <button type="submit" className="btn btn-primary mb-3">Go!</button> */}
-                    {/* </Link> */}
-                </div>
-            </div>
-        );
-    }
+    return (
+        <Form
+        onChange={handleInputChange}
+        onSubmit={handleSubmit}
+        >
+            {/* <Form.Label>form label</Form.Label> */}
+            <InputGroup className='mt-3'>
+                <Form.Control type='text' placeholder='Character Name'/>
+                <Button variant="primary" type="submit">Find Character!</Button>
+            </InputGroup>
+            {/* <Form.Text className='text-muted'>Who are we looking at today?</Form.Text> */}
+        </Form>
+    );
 }
 
 export default CharacterQuery;

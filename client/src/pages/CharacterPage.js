@@ -10,13 +10,8 @@ const CharacterPage = () => {
     const [characterName, setCharacterName] = useState('');
     const { name } = useParams();
 
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    // triggers when component loads
-    // useEffect(() => {
-    //     updateFightIDs(name)
-    // }, []);
+    const navigate = useNavigate(); // this is to programmatically go to new route
+    const location = useLocation(); // using this to trigger useEffect when route changes
 
     // triggers when route changes, and when component loads
     useEffect(() => {
@@ -56,9 +51,7 @@ const CharacterPage = () => {
 
     return (
         <div>
-            <CharacterQuery
-                onClickHandler={queryClicked}
-            />
+            <CharacterQuery/>
             <Stats
                 characterName={characterName}
             />
