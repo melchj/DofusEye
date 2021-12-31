@@ -1,6 +1,9 @@
 from sqlalchemy import create_engine, select
 from app.database.database import db
 
+# based on this answer:
+# https://stackoverflow.com/questions/55756491/using-sqlalchemy-to-migrate-databases-sqlite-to-postgres-cloudsql
+
 engine_from = create_engine('sqlite:///main.db')
 engine_to = create_engine('postgresql://postgres:postgres@localhost:5432/dofuseye')
 
