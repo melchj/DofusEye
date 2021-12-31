@@ -33,8 +33,12 @@ class Fight extends React.Component {
                 return null;
             }
 
-            var isDead = this.props.fightData[posDead] == 1
-            var isAttacker = this.props.fightData.sword.toUpperCase() === pos.toUpperCase();
+            var isDead = this.props.fightData[posDead] == 1;
+            var isAttacker = false;
+            // check that the sword property isnt null...
+            if (this.props.fightData.sword) {
+                isAttacker = this.props.fightData.sword.toUpperCase() === pos.toUpperCase();
+            }
 
             return (
                 <div className="row align-items-center">
