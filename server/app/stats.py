@@ -18,7 +18,7 @@ def getCharacterStats(fightList, charName):
 
     # in the sword (attacker) column, replace empty values with "l1" for this analysis
     # TODO: these should probably be caught farther upstream somewhere and handled there. idk if 'l1' is the best default
-    temp = fights['sword'].replace(r'', 'l1', regex=True)
+    temp = fights['sword'].replace({r'', None}, 'l1', regex=True)
 
     # True/False column to know if target character was on the attacking team ('*' is AND, '|'is OR logical operators)
     attackerSide = temp.apply(lambda x: x.lower()[0]) # make column of just the 'l' or 'w' letters
