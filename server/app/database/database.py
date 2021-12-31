@@ -7,13 +7,13 @@ db = SQLAlchemy()
 class Fight(db.Model):
     __tablename__ = "perc_prism"
 
-    fight_id = db.Column(db.Integer, primary_key=True, unique=True)
-    modified = db.Column(db.Integer, default=0)
-    guild_id = db.Column(db.Integer, nullable=False)
-    channel_id = db.Column(db.Integer, nullable=False)
-    date = db.Column(db.Integer, nullable=False)
+    fight_id = db.Column(db.Integer(), primary_key=True, unique=True)
+    modified = db.Column(db.Integer(), default=0)
+    guild_id = db.Column(db.BigInteger(), nullable=False)
+    channel_id = db.Column(db.BigInteger(), nullable=False)
+    date = db.Column(db.Integer(), nullable=False)
     file_path = db.Column(db.Text(), nullable=False)
-    sword = db.Column(db.Text(), nullable=False)
+    sword = db.Column(db.Text())
     w1_name = db.Column(db.Text())
     w1_class = db.Column(db.Text())
     w1_dead = db.Column(db.Integer())
@@ -52,8 +52,8 @@ class Alias(db.Model):
     __tablename__ = "aliases"
 
     # id = db.Column(db.Integer())
-    character_name = db.Column(db.Text, primary_key=True, unique=True)
-    account_name = db.Column(db.Text)
+    character_name = db.Column(db.Text(), primary_key=True, unique=True)
+    account_name = db.Column(db.Text())
 
     def __repr__(self) -> str:
         return f"<Alias: ({self.account_name}) {self.character_name}>"

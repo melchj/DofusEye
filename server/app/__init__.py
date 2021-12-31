@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, abort, send_file
+from flask_migrate import Migrate
 from sqlalchemy import or_
 from functools import wraps
-
 from app.stats import getCharacterStats
 from app.stats import getCharacterClass
 
@@ -39,6 +39,9 @@ def create_app():
     from app.database.database import db, Fight, Alias
     db.init_app(app)
 
+    # create migrate object to handle creation/migration/upgrade of db
+    migrate = Migrate(app, db)
+
     # import marshmallow schema, attach app
     from app.schema import ma, schema_alias, schema_fight, schema_fights, schema_aliases
     ma.init_app(app)
@@ -49,16 +52,16 @@ def create_app():
         # TODO: need to filter out results that come from testing channels. see discord bot query
         queryResult = db.session.query(Fight).filter(
             or_(
-                Fight.w1_name.like(character_name),
-                Fight.w2_name.like(character_name),
-                Fight.w3_name.like(character_name),
-                Fight.w4_name.like(character_name),
-                Fight.w5_name.like(character_name),
-                Fight.l1_name.like(character_name),
-                Fight.l2_name.like(character_name),
-                Fight.l3_name.like(character_name),
-                Fight.l4_name.like(character_name),
-                Fight.l5_name.like(character_name)
+                Fight.w1_name.ilike(character_name),
+                Fight.w2_name.ilike(character_name),
+                Fight.w3_name.ilike(character_name),
+                Fight.w4_name.ilike(character_name),
+                Fight.w5_name.ilike(character_name),
+                Fight.l1_name.ilike(character_name),
+                Fight.l2_name.ilike(character_name),
+                Fight.l3_name.ilike(character_name),
+                Fight.l4_name.ilike(character_name),
+                Fight.l5_name.ilike(character_name)
             )
         )
         return queryResult
@@ -114,7 +117,8 @@ def create_app():
 
         if ids:
             ids = ids.split(',')
-            result = db.session.query(Fight).filter(or_(*[Fight.fight_id.like(_id) for _id in ids]))
+            # result = db.session.query(Fight).filter(or_(*[Fight.fight_id.like(_id) for _id in ids]))
+            result = db.session.query(Fight).filter(or_(*[(Fight.fight_id==_id) for _id in ids]))
             if result:
                 return jsonify(schema_fights.dump(result))
             else:
@@ -154,16 +158,16 @@ def create_app():
         # that way we don't need to duplicate query code and such
         result = db.session.query(Fight.fight_id).filter(
             or_(
-                Fight.w1_name.like(character_name),
-                Fight.w2_name.like(character_name),
-                Fight.w3_name.like(character_name),
-                Fight.w4_name.like(character_name),
-                Fight.w5_name.like(character_name),
-                Fight.l1_name.like(character_name),
-                Fight.l2_name.like(character_name),
-                Fight.l3_name.like(character_name),
-                Fight.l4_name.like(character_name),
-                Fight.l5_name.like(character_name)
+                Fight.w1_name.ilike(character_name),
+                Fight.w2_name.ilike(character_name),
+                Fight.w3_name.ilike(character_name),
+                Fight.w4_name.ilike(character_name),
+                Fight.w5_name.ilike(character_name),
+                Fight.l1_name.ilike(character_name),
+                Fight.l2_name.ilike(character_name),
+                Fight.l3_name.ilike(character_name),
+                Fight.l4_name.ilike(character_name),
+                Fight.l5_name.ilike(character_name)
             )
         )
         # TODO: need to filter out results that come from testing channels. see discord bot query
@@ -185,7 +189,7 @@ def create_app():
             name = request.args.get('name')
             if name:
                 # if name is given with '/aliases?name=character_name', give the alias info of character_name
-                a = Alias.query.filter(Alias.character_name.like(name)).first()
+                a = Alias.query.filter(Alias.character_name.ilike(name)).first()
 
                 if a:
                     return schema_alias.dump(a)
