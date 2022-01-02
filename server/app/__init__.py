@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, abort, send_file
 from flask_migrate import Migrate
+from flask_cors import CORS
 from sqlalchemy import or_
 from functools import wraps
 from app.stats import getCharacterStats
@@ -19,6 +20,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object("config.Config")
     # print(app.config)
+    CORS(app)
 
     # TODO: idk... make sure this is the "best" way to authenticate with a secret key
     # create decorator function to require api key
