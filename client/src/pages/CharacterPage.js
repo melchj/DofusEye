@@ -57,6 +57,7 @@ const CharacterPage = () => {
             />
             <FightList
                 fightIDs={fightIDlist}
+                target={characterName}
             />
         </div>
     );

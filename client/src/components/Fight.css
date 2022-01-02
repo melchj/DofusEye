@@ -99,3 +99,11 @@
     width: 75%;
     max-width: none !important;
 }
+
+.name-link {
+    text-decoration: none;
+}
+
+.name-link:hover {
+    text-decoration: underline;
+}

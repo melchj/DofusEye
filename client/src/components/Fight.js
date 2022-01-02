@@ -1,7 +1,8 @@
-import React from 'react'
-import Modal from "react-bootstrap/Modal"
+import React from 'react';
+import Modal from "react-bootstrap/Modal";
+import { Link } from 'react-router-dom';
 import { getFightImage } from '../services/FightService';
-import './Fight.css'
+import './Fight.css';
 
 class Fight extends React.Component {
     constructor(props) {
@@ -16,7 +17,7 @@ class Fight extends React.Component {
         const p = pos+"_class";
         const cl = this.props.fightData && (" class-"+this.props.fightData[p]);
 
-        var className = "class-icon me-3";
+        var className = "class-icon";
         className += cl;
 
         return className;
@@ -40,16 +41,30 @@ class Fight extends React.Component {
                 isAttacker = this.props.fightData.sword.toUpperCase() === pos.toUpperCase();
             }
 
+            const name = this.props.fightData[posName];
+
+            // if a target was passed to this fight object, highlight the target's name in the list
+            var isTarget = '';
+            if (this.props.target && (this.props.target.toLowerCase() === name.toLowerCase())) {
+                isTarget = 'bg-warning ';
+            }
+
             return (
-                <div className="row align-items-center">
-                    <div className={this.classStyle(pos)}></div>
-                    {this.props.fightData && this.props.fightData[posName]}
-                    {isDead && <div className="dead-icon"></div>}
-                    {isAttacker && <div className="attacker-icon"></div>}
-                </div>
+                // <div className="row">
+                    <div className={isTarget + 'row align-items-center'}>
+                        <div className={'col-1 '+this.classStyle(pos)}></div>
+
+                        <Link to={'/character/'+name} className='col-6 text-body name-link'>{name}</Link>
+                        {/* <div className='col-6'>{name}</div> */}
+
+                        {isDead && <div className="col-1 dead-icon"></div>}
+                        {isAttacker && <div className="col-1 attacker-icon"></div>}
+                    </div>
+                // </div>
                 );
+        } else {
+            return null;
         }
-        return null;
     }
 
     showModal() {
@@ -92,7 +107,6 @@ class Fight extends React.Component {
                 <div className="card-body">
                     <div className="row">
                         <h2 className="card-title">Fight ID: {this.props.fightData && this.props.fightData.fight_id}</h2>
-                        {/* <p>{this.props.fightData.date}</p> */}
                     </div>
                     <div>
                         {this.getDate()}

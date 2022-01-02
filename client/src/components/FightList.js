@@ -54,7 +54,7 @@ class FightList extends React.Component {
             sortedFightDatas.map((fightData, index) => {
                 return (
                     <div className="col-md-6" key={fightData.fight_id}>
-                        <Fight fightData={fightData}/>
+                        <Fight fightData={fightData} target={this.props.target}/>
                     </div>
                 );
             })
