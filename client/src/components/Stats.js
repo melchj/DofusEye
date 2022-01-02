@@ -160,7 +160,7 @@ class Stats extends React.Component {
                             <h3>Best Friends:</h3>
                             <p>(most common allies)</p>
                             <ul>
-                                {this.state.characterStats && Object.keys(this.state.characterStats['most common allies']).map((key, i) => (
+                                {this.state.characterStats && this.state.characterStats['most common allies'] && Object.keys(this.state.characterStats['most common allies']).map((key, i) => (
                                     <li key={i}>{key}, {this.state.characterStats['most common allies'][key]}</li>
                                 ))}
                             </ul>
@@ -169,7 +169,7 @@ class Stats extends React.Component {
                             <h3>Rivals:</h3>
                             <p>(most common enemies)</p>
                             <ul>
-                                {this.state.characterStats && Object.keys(this.state.characterStats['most common enemies']).map((key, i) => (
+                                {this.state.characterStats && this.state.characterStats['most common enemies'] && Object.keys(this.state.characterStats['most common enemies']).map((key, i) => (
                                     <li key={i}>{key}, {this.state.characterStats['most common enemies'][key]}</li>
                                 ))}
                             </ul>
@@ -180,7 +180,7 @@ class Stats extends React.Component {
                         <div className='col'>
                             <h3>Most Wins vs:</h3>
                             <ul>
-                                {this.state.characterStats && Object.keys(this.state.characterStats['most often beat']).map((key, i) => (
+                                {this.state.characterStats && this.state.characterStats['most often beat'] && Object.keys(this.state.characterStats['most often beat']).map((key, i) => (
                                     <li key={i}>{key}, {this.state.characterStats['most often beat'][key]}</li>
                                 ))}
                             </ul>
@@ -188,7 +188,7 @@ class Stats extends React.Component {
                         <div className='col'>
                             <h3>Most Losses vs:</h3>
                             <ul>
-                                {this.state.characterStats && Object.keys(this.state.characterStats['most often beaten by']).map((key, i) => (
+                                {this.state.characterStats && this.state.characterStats['most often beaten by'] && Object.keys(this.state.characterStats['most often beaten by']).map((key, i) => (
                                     <li key={i}>{key}, {this.state.characterStats['most often beaten by'][key]}</li>
                                 ))}
                             </ul>
