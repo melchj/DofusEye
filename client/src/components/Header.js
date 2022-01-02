@@ -12,7 +12,7 @@ export const Header = () => {
                         <img src={require("../res/eye.png")} alt="" width="30" height="100%"/>
                         DofusEye
                     </Link>
-                    <span className='navbar-text'>Note: this site is unfinished; created as a learning excersize by someone who has never done this before.</span>
+                    <span className='navbar-text'>Note: this site is unfinished; created as a learning excersise by someone who has never done this before.</span>
                     <div className='navbar-nav'>
                         <Link to='/character' className='nav-link'>Characters</Link>
                         <Link to='/account' className='nav-link'>Accounts</Link>
