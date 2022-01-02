@@ -92,6 +92,8 @@ Now you can navigate to `http://localhost:3000`.
 ---
 ## Database Data Population
 If you have a binary `main.db` sqlite3 file that matches the schema of this project (likely generated from the "PercScoreKeeper Discord Bot", before its eventual integration with the rest of the DofusEye project), place this file in `server/main.db` and run the following python script to transfer the data from this file into the __EMPTY__ postgres database:
+
+(by "empty", this means the postgres database was cleared of all data and then the schema was set up by subsequently executing `flask db upgrade`.)
 ```bash
 $ python sqlite_to_psql.py
 ```
