@@ -74,7 +74,16 @@ class Fight extends React.Component {
 
     correctFight() {
         // TODO: implement this once there is a fight correction page
-        alert("not yet implemented :(")
+        alert("not yet implemented :(\nCorrections can be made with the bot in the Free Ringtones Discord.")
+    }
+
+    getDate() {
+        if (this.props.fightData) {
+            var date = new Date(this.props.fightData['date'] * 1000);
+            return date.toDateString();
+        } else {
+            return '';
+        }
     }
 
     render() {
@@ -84,6 +93,9 @@ class Fight extends React.Component {
                     <div className="row">
                         <h2 className="card-title">Fight ID: {this.props.fightData && this.props.fightData.fight_id}</h2>
                         {/* <p>{this.props.fightData.date}</p> */}
+                    </div>
+                    <div>
+                        {this.getDate()}
                     </div>
                     <div className="row">
                         <div className="col-md-6">
@@ -114,7 +126,12 @@ class Fight extends React.Component {
                     dialogClassName="modal-75w"
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title><h2>Fight ID: {this.props.fightData && this.props.fightData.fight_id}</h2></Modal.Title>
+                        <Modal.Title>
+                            <h2>Fight ID: {this.props.fightData && this.props.fightData.fight_id}</h2>
+                            <div>
+                                {this.getDate()}
+                            </div>
+                        </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div>

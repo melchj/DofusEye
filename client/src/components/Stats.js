@@ -52,7 +52,7 @@ class Stats extends React.Component {
                                     <tr>
                                         <th scope='col'></th>
                                         <th scope='col'>5v5</th>
-                                        <th scope='col'>Total</th>
+                                        <th scope='col'>All</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -87,7 +87,7 @@ class Stats extends React.Component {
                                     <tr>
                                         <th scope='col'></th>
                                         <th scope='col'>5v5</th>
-                                        <th scope='col'>Total</th>
+                                        <th scope='col'>All</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -122,7 +122,7 @@ class Stats extends React.Component {
                                     <tr>
                                         <th scope='col'></th>
                                         <th scope='col'>5v5</th>
-                                        <th scope='col'>Total</th>
+                                        <th scope='col'>All</th>
                                     </tr>
                                 </thead>
                                 <tbody>
