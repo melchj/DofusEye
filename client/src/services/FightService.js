@@ -6,6 +6,12 @@ import axios from 'axios';
 // TODO: should this just be for all API interaction? why is this class set up for just "FIGHT" services?
 // i am going to use it for stat calls anway... to refactor later i suppose
 
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+
+// const api = axios.create({
+//     baseURL: process.env.REACT_APP_BASE_URL || "http://localhost:3000"
+// });
+
 export async function getFight(fight_id) {
     try {
         const response = await axios.get('/api/fights/'+fight_id, {
