@@ -7,6 +7,7 @@ from werkzeug.utils import redirect
 from app.stats import getCharacterStats
 from app.stats import getCharacterClass
 import boto3
+from botocore.config import Config
 
 # TODO: request parser type thing? to better return errors when request doesnt include required info?
 # see:
@@ -149,10 +150,13 @@ def create_app():
 
         # TODO: add check that file exists
 
+        my_config = Config(signature_version='v4')
+
         # connect to aws s3, generate and return a presigned URL for the image
         s3 = boto3.client(  's3',
                             aws_access_key_id=app.config['S3_ACCESS_KEY'],
-                            aws_secret_access_key=app.config['S3_SECRET_KEY'])
+                            aws_secret_access_key=app.config['S3_SECRET_KEY'],
+                            config=my_config)
 
         url = s3.generate_presigned_url('get_object', Params={'Bucket': app.config['S3_BUCKET_NAME'], 'Key': path}, ExpiresIn = 600)
         return redirect(url, code=302)
