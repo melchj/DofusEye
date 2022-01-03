@@ -2,3 +2,6 @@ FLASK_APP=app
 FLASK_ENV=development
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/dofuseye
 SECRET_KEY=putYourKeyHere
+S3_ACCESS_KEY=accessKeyHere
+S3_SECRET_KEY=secretKeyHere
+S3_BUCKET_NAME=bucketNameHere

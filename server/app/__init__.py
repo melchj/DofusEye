@@ -3,8 +3,10 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from sqlalchemy import or_
 from functools import wraps
+from werkzeug.utils import redirect
 from app.stats import getCharacterStats
 from app.stats import getCharacterClass
+import boto3
 
 # TODO: request parser type thing? to better return errors when request doesnt include required info?
 # see:
@@ -147,7 +149,14 @@ def create_app():
 
         # TODO: add check that file exists
 
-        return send_file(path)
+        # connect to aws s3, generate and return a presigned URL for the image
+        s3 = boto3.client(  's3',
+                            aws_access_key_id=app.config['S3_ACCESS_KEY'],
+                            aws_secret_access_key=app.config['S3_SECRET_KEY'])
+
+        url = s3.generate_presigned_url('get_object', Params={'Bucket': app.config['S3_BUCKET_NAME'], 'Key': path}, ExpiresIn = 600)
+        return redirect(url, code=302)
+        # return send_file(path)
 
     # ---- fightIDs endpoints ----
     @app.route('/api/fightids/characters/<string:character_name>', methods=['GET'])
