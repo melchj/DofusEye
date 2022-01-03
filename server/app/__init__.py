@@ -150,7 +150,10 @@ def create_app():
 
         # TODO: add check that file exists
 
-        my_config = Config(signature_version='v4')
+        my_config = Config(
+            signature_version='v4',
+            region_name='us-east-2'
+            )
 
         # connect to aws s3, generate and return a presigned URL for the image
         s3 = boto3.client(  's3',
