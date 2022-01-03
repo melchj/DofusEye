@@ -151,7 +151,7 @@ def create_app():
         # TODO: add check that file exists
 
         my_config = Config(
-            signature_version='v4',
+            signature_version='s3v4',
             region_name='us-east-2'
             )
 
