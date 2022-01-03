@@ -79,8 +79,11 @@ export async function getBasicCharacterStats(character_name) {
 
 export async function getFightImage(fightID) {
     try {
+        console.log('axios requesting image: '+fightID);
         const response = await axios.get('/api/fights/'+fightID+'/image?key='+process.env.REACT_APP_API_KEY);
-        // return response.data;
+        // const response = await axios.get('/api/fights/'+fightID+'/image', {
+        //     'x-api-key': process.env.REACT_APP_API_KEY
+        // });
         return response.config.url
     } catch (error) {
         console.log(error)

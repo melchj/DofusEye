@@ -130,7 +130,7 @@ class Fight extends React.Component {
                         </div>
                     </div>
                     <div className='row'>
-                        <button className="btn btn-secondary" onClick={this.showModal.bind(this)}>See Details</button>
+                        <button className="btn btn-secondary" onClick={this.showModal.bind(this)}>See Screenshot</button>
                     </div>
                 </div>
 
