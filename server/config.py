@@ -12,3 +12,7 @@ class Config:
     # replace statement abvoe is a workaround for a heroku postgres quirk
     # see: https://stackoverflow.com/questions/66690321/flask-and-heroku-sqlalchemy-exc-nosuchmoduleerror-cant-load-plugin-sqlalchemy
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    S3_ACCESS_KEY = environ.get("S3_ACCESS_KEY")
+    S3_SECRET_KEY = environ.get("S3_SECRET_KEY")
+    S3_BUCKET_NAME = environ.get("S3_BUCKET_NAME")
