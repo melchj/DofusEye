@@ -52,6 +52,7 @@ const CharacterPage = () => {
     return (
         <div>
             <CharacterQuery/>
+            <div className='text-danger'>fight screenshots coming soon! big bug i cant figure out easily :(</div>
             <Stats
                 characterName={characterName}
             />

@@ -74,11 +74,12 @@ class Fight extends React.Component {
         if (this.props.fightData && this.state.image == null) {
             getFightImage(this.props.fightData.fight_id)
             .then((resp) => {
-                this.setState({image: resp});
+                console.log(resp);
+                // this.setState({image: resp});
             })
             .catch((error) => {
                 console.log(error);
-            })
+            });
         }
     }
 
@@ -129,9 +130,9 @@ class Fight extends React.Component {
                             {this.renderCharacter('l5')}
                         </div>
                     </div>
-                    <div className='row'>
+                    {/* <div className='row'>
                         <button className="btn btn-secondary" onClick={this.showModal.bind(this)}>See Screenshot</button>
-                    </div>
+                    </div> */}
                 </div>
 
                 <Modal
