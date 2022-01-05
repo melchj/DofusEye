@@ -107,11 +107,17 @@ class Fight extends React.Component {
             <div className="card text-dark bg-light mt-3">
                 <div className="card-body">
                     <div className="row">
-                        <h2 className="card-title">Fight ID: {this.props.fightData && this.props.fightData.fight_id}</h2>
+                        <div className='col-6'>
+                            <h2 className="card-title">Fight ID: {this.props.fightData && this.props.fightData.fight_id}</h2>
+                            <div>
+                                {this.getDate()}
+                            </div>
+                        </div>
+                        <div className='col-6'>
+                            <button className="btn btn-secondary float-end" onClick={this.showModal.bind(this)}>See Screenshot</button>
+                        </div>
                     </div>
-                    <div>
-                        {this.getDate()}
-                    </div>
+                    
                     <div className="row">
                         <div className="col-md-6">
                             <h3>Winners</h3>
@@ -130,9 +136,9 @@ class Fight extends React.Component {
                             {this.renderCharacter('l5')}
                         </div>
                     </div>
-                    <div className='row'>
+                    {/* <div className='row'>
                         <button className="btn btn-secondary" onClick={this.showModal.bind(this)}>See Screenshot</button>
-                    </div>
+                    </div> */}
                 </div>
 
                 <Modal
