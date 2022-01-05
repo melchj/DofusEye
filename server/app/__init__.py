@@ -162,8 +162,8 @@ def create_app():
                             config=my_config)
 
         url = s3.generate_presigned_url('get_object', Params={'Bucket': app.config['S3_BUCKET_NAME'], 'Key': path}, ExpiresIn = 600)
-        return redirect(url, code=302)
-        # return send_file(path)
+        # return redirect(url, code=302)
+        return url
 
     # ---- fightIDs endpoints ----
     @app.route('/api/fightids/characters/<string:character_name>', methods=['GET'])
