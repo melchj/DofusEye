@@ -100,8 +100,48 @@ def create_app():
     @app.route('/api/fights/characters/<string:character_name>', methods=['GET'])
     @require_apikey
     def getFightByCharacter(character_name):
-        """returns all the fights that this character is in. or 404 if none found."""
+        """
+        returns all the fights that this character is in. or 404 if none found.
+        filters by filters specified in query. filters default to true
+        a = "attacks"
+        d = "defences"
+        w = "wins"
+        l = "losses"
+        """
         result = queryFightsbyCharacter(character_name)
+
+        # if wins=false -- filter out wins (only keep losses)
+        if (request.args.get('w') and (request.args.get('w').lower() == 'false')):
+            result = result.filter(
+                or_(
+                    Fight.l1_name.ilike(character_name),
+                    Fight.l2_name.ilike(character_name),
+                    Fight.l3_name.ilike(character_name),
+                    Fight.l4_name.ilike(character_name),
+                    Fight.l5_name.ilike(character_name)
+                )
+            )
+        
+        # if losses=false -- filter out losses (only keep wins)
+        if (request.args.get('l') and (request.args.get('l').lower() == 'false')):
+            result = result.filter(
+                or_(
+                    Fight.w1_name.ilike(character_name),
+                    Fight.w2_name.ilike(character_name),
+                    Fight.w3_name.ilike(character_name),
+                    Fight.w4_name.ilike(character_name),
+                    Fight.w5_name.ilike(character_name),
+                )
+            )
+        
+        # if attacks=false -- get only defs => character.pos[0] != sword[0]
+        if (request.args.get('a') and (request.args.get('a').lower() == 'false')):
+            pass
+
+        # if defs=false -- get only attacks => character.pos[0] == sword[0]
+        if (request.args.get('d') and (request.args.get('d').lower() == 'false')):
+            pass
+
         if result:
             return jsonify(schema_fights.dump(result))
         else:
