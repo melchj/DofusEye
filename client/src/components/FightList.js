@@ -4,31 +4,18 @@ import Fight from './Fight';
 
 // class FightList extends React.Component {
 const FightList = (props) => {
-    const [fightIDs, setFightIDs] = useState([]);
     const [fightDatas, setFightDatas] = useState([]);
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //     };
-    // }
 
-    // componentDidMount() {
-    //     this.fetchData();
-    // }
+    const [checkWin, setCheckWin] = useState(true);
+    const [checkLoss, setCheckLoss] = useState(true);
+
+    const [checkAttack, setCheckAttack] = useState(true);
+    const [checkDef, setCheckDef] = useState(true);
 
     // triggers when fightIDs changes
     useEffect(() => {
         fetchData();
     }, [props.fightIDs]);
-
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-    //     // console.log('FightList did update')
-    //     // check to make sure something in props changed, to avoid inifinite loop:
-    //     if (this.props.fightIDs !== prevProps.fightIDs) {
-    //         // console.log(this.props.fightIDs)
-    //         this.fetchData();
-    //     }
-    // }
 
     const fetchData = () => {
         // return if list is empty to avoid requesting ALL fights from API (API does this for empty request)
@@ -40,7 +27,6 @@ const FightList = (props) => {
         // which is passed to child Fight components (component and sub components re-rendered when state updates)
         getFightsList(props.fightIDs)
         .then((resp) => {
-            // this.setState({fightDatas: resp});
             setFightDatas(resp);
         })
         .catch((error) => {
@@ -50,7 +36,6 @@ const FightList = (props) => {
 
     const renderFights = () => {
         if (!fightDatas) {
-            // console.log('FightList: no fights to render, fightDatas is null...')
             return null;
         }
 
@@ -69,42 +54,47 @@ const FightList = (props) => {
         );
     }
 
-    // handleOptionChange(event) {
-    //     let { name, value } = event.target;
-    //     this.setState( { [name]:value } );
-    //     console.log('name: ' + name)
-    //     console.log('value: ' + value)
-    // }
+    const handleApplyFilters = () => {
+        console.log('apply filters...')
+    }
 
-    // render() {
-        return (
-            <div className="row">
-                <div className="col-12">
-                    <h2>Showing {fightDatas && fightDatas.length} fights:</h2>
-                </div>
-                {/* <div className='col-12'> */}
-                    {/* <div className="col-4 btn-group" role="group" aria-label="Basic radio toggle button group">
-                        <input type="checkbox" className="btn-check" name="btnradio" id="btnradio1" onChange={handleOptionChange}/>
-                        <label className="btn btn-outline-primary" htmlFor="btnradio1">
-                            Radio 1
-                        </label>
-
-                        <input type="checkbox" className="btn-check" name="btnradio" id="btnradio2" onChange={handleOptionChange}/>
-                        <label className="btn btn-outline-primary" htmlFor="btnradio2">
-                            Radio 2
-                        </label>
-
-                        <input type="checkbox" className="btn-check" name="btnradio" id="btnradio3" onChange={handleOptionChange}/>
-                        <label className="btn btn-outline-primary" htmlFor="btnradio3">
-                            Radio 3
-                        </label>
-                    </div> */}
-                {/* </div> */}
-                {/* {this.state} */}
-                {renderFights()}
+    return (
+        <div className="row">
+            <div className="col-12">
+                <h2>Showing {fightDatas && fightDatas.length} fights:</h2>
             </div>
-        );
-    // }
+            <div className='col-12'>
+                <div className="btn-group me-3" role="group">
+                    <input type="checkbox" className="btn-check" name="checkWin" id="checkWin" onChange={() => {setCheckWin(!checkWin)}} checked={checkWin}/>
+                    <label className="btn btn-outline-dark" htmlFor="checkWin">
+                        Wins
+                    </label>
+
+                    <input type="checkbox" className="btn-check" name="checkLoss" id="checkLoss" onChange={() => {setCheckLoss(!checkLoss)}} checked={checkLoss}/>
+                    <label className="btn btn-outline-dark" htmlFor="checkLoss">
+                        Losses
+                    </label>
+                </div>
+
+                <div className="btn-group me-3" role="group">
+                    <input type="checkbox" className="btn-check" name="checkAttack" id="checkAttack" onChange={() => {setCheckAttack(!checkAttack)}} checked={checkAttack}/>
+                    <label className="btn btn-outline-dark" htmlFor="checkAttack">
+                        Attacks
+                    </label>
+
+                    <input type="checkbox" className="btn-check" name="checkDef" id="checkDef" onChange={() => {setCheckDef(!checkDef)}} checked={checkDef}/>
+                    <label className="btn btn-outline-dark" htmlFor="checkDef">
+                        Defs
+                    </label>
+                </div>
+
+                <div className='btn-group'>
+                    <button className="btn btn-success float-end" onClick={handleApplyFilters}>Apply Filters</button>
+                </div>
+            </div>
+            {renderFights()}
+        </div>
+    );
 }
 
 export default FightList;
