@@ -77,15 +77,9 @@ export async function getBasicCharacterStats(character_name) {
     }
 }
 
-export async function getFightImage(fightID) {
-    try {
-        console.log('axios requesting image: '+fightID);
-        const response = await axios.get('/api/fights/'+fightID+'/image?key='+process.env.REACT_APP_API_KEY);
-        // const response = await axios.get('/api/fights/'+fightID+'/image', {
-        //     'x-api-key': process.env.REACT_APP_API_KEY
-        // });
-        return response.config.url
-    } catch (error) {
-        console.log(error)
-    }
+export function getFightImage(fightID) {
+    const url = '/api/fights/'+fightID+'/image?key='+process.env.REACT_APP_API_KEY;
+    return axios.get(url).then((response) => {
+        return response.data;
+    });
 }
