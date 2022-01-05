@@ -21,6 +21,9 @@ class Stats extends React.Component {
     }
 
     fetchData() {
+        if (!this.props.characterName) {
+            return;
+        }
         // call API
         getBasicCharacterStats(this.props.characterName)
         .then((resp) => {

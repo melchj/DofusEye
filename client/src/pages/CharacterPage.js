@@ -20,7 +20,7 @@ const CharacterPage = () => {
 
     const updateFightIDs = (character_name) => {
         // ignore if empty string
-        if (!character_name) {
+        if (!character_name || character_name === '') {
             return;
         }
 
