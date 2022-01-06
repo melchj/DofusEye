@@ -25,9 +25,26 @@ export async function getFight(fight_id) {
     }
 }
 
-export async function getFightsByCharacter(character_name) {
+export async function getFightsByCharacter(character_name, wins=true, losses=true, attacks=true, defs=true) {
+    var query = ''
+    if (!wins) {;
+        query = query + 'w=false&'
+    }
+    if (!losses) {
+        query = query + 'l=false&';
+    }
+    if (!attacks) {
+        query = query + 'a=false&';
+    }
+    if (!defs) {
+        query = query + 'd=false&';
+    }
+    if (query != '') {
+        query = '?'+query;
+    }
+    console.log('query: '+query)
     try {
-        const response = await axios.get('/api/fights/characters/'+character_name, {
+        const response = await axios.get('/api/fights/characters/'+character_name+''+query, {
             headers: {
                 'x-api-key': process.env.REACT_APP_API_KEY
             }
