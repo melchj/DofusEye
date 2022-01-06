@@ -8,6 +8,7 @@ from app.stats import getCharacterStats
 from app.stats import getCharacterClass
 import boto3
 from botocore.config import Config
+from app.filters import filterFights
 
 # TODO: request parser type thing? to better return errors when request doesnt include required info?
 # see:
@@ -109,43 +110,24 @@ def create_app():
         l = "losses"
         """
         result = queryFightsbyCharacter(character_name)
+        # if result is None:
+        #     abort(404)
 
-        # if wins=false -- filter out wins (only keep losses)
-        if (request.args.get('w') and (request.args.get('w').lower() == 'false')):
-            result = result.filter(
-                or_(
-                    Fight.l1_name.ilike(character_name),
-                    Fight.l2_name.ilike(character_name),
-                    Fight.l3_name.ilike(character_name),
-                    Fight.l4_name.ilike(character_name),
-                    Fight.l5_name.ilike(character_name)
-                )
-            )
-        
-        # if losses=false -- filter out losses (only keep wins)
-        if (request.args.get('l') and (request.args.get('l').lower() == 'false')):
-            result = result.filter(
-                or_(
-                    Fight.w1_name.ilike(character_name),
-                    Fight.w2_name.ilike(character_name),
-                    Fight.w3_name.ilike(character_name),
-                    Fight.w4_name.ilike(character_name),
-                    Fight.w5_name.ilike(character_name),
-                )
-            )
-        
-        # if attacks=false -- get only defs => character.pos[0] != sword[0]
+        a = True
+        d = True
+        w = True
+        l = True
         if (request.args.get('a') and (request.args.get('a').lower() == 'false')):
-            pass
-
-        # if defs=false -- get only attacks => character.pos[0] == sword[0]
+            a = False
         if (request.args.get('d') and (request.args.get('d').lower() == 'false')):
-            pass
+            d = False
+        if (request.args.get('w') and (request.args.get('w').lower() == 'false')):
+            w = False
+        if (request.args.get('l') and (request.args.get('l').lower() == 'false')):
+            l = False
 
-        if result:
-            return jsonify(schema_fights.dump(result))
-        else:
-            abort(404)
+        filteredResult = filterFights(schema_fights.dump(result), character_name, attacks=a, defs=d, wins=w, losses=l)
+        return jsonify(filteredResult.to_dict(orient='records'))
 
     @app.route('/api/fights', methods=['GET'])
     @require_apikey
