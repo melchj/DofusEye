@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getFightsByCharacter } from '../services/FightService';
+import { getFightsByCharacter } from '../services/ApiService';
 import Fight from './Fight';
 
 // class FightList extends React.Component {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getBasicCharacterStats } from '../services/FightService';
+import { getBasicCharacterStats } from '../services/ApiService';
 import './Fight.css'
 // import './Stats.css'
 

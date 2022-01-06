@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from "react-bootstrap/Modal";
 import { Link } from 'react-router-dom';
-import { getFightImage } from '../services/FightService';
+import { getFightImage } from '../services/ApiService';
 import './Fight.css';
 
 class Fight extends React.Component {

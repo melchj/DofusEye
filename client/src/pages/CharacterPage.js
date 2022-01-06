@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import CharacterQuery from '../components/CharacterQuery';
 import FightList from '../components/FightList';
 import Stats from '../components/Stats';
-import { getFightIDsByCharacter } from '../services/FightService';
+import { getFightIDsByCharacter } from '../services/ApiService';
 
 const CharacterPage = () => {
     const [fightIDlist, setFightIDs] = useState([]);
