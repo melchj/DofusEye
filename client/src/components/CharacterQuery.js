@@ -25,7 +25,7 @@ const CharacterQuery = () => {
             {/* <Form.Label>form label</Form.Label> */}
             <InputGroup className='mt-3'>
                 <Form.Control type='text' placeholder='Character Name'/>
-                <Button variant="primary" type="submit">Find Character!</Button>
+                <Button variant="success" type="submit">Find Character!</Button>
             </InputGroup>
             {/* <Form.Text className='text-muted'>Who are we looking at today?</Form.Text> */}
         </Form>
