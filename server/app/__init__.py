@@ -1,20 +1,21 @@
-from flask import Flask, request, jsonify, abort, send_file
+from flask import Flask, request, jsonify, abort
 from flask_migrate import Migrate
 from flask_cors import CORS
 from sqlalchemy import or_
 from functools import wraps
-from werkzeug.utils import redirect
 from app.stats import getCharacterStats
 from app.stats import getCharacterClass
 import boto3
 from botocore.config import Config
 from app.filters import filterFights
+from flask_bcrypt import Bcrypt
 
 # TODO: request parser type thing? to better return errors when request doesnt include required info?
 # see:
 # https://www.youtube.com/watch?v=GMppyAPbLYk
 # https://www.techwithtim.net/flask-rest-api/
 
+bcrypt = Bcrypt()
 
 # ---- application factory ----
 def create_app():
@@ -25,24 +26,25 @@ def create_app():
     app.config.from_object("config.Config")
     # print(app.config)
     CORS(app)
+    bcrypt.init_app(app)
 
     # TODO: idk... make sure this is the "best" way to authenticate with a secret key
     # create decorator function to require api key
-    def require_apikey(view_function):
-        @wraps(view_function)
-        # the new, post-decoration function. Note *args and **kwargs here.
-        def decorated_function(*args, **kwargs):
-            key = app.config['SECRET_KEY']
-            if request.headers.get('x-api-key') and request.headers.get('x-api-key') == key:
-                return view_function(*args, **kwargs)
-            elif request.args.get('key') and request.args.get('key') == key:
-                return view_function(*args, **kwargs)
-            else:
-                abort(401)
-        return decorated_function
+    # def require_apikey(view_function):
+    #     @wraps(view_function)
+    #     # the new, post-decoration function. Note *args and **kwargs here.
+    #     def decorated_function(*args, **kwargs):
+    #         key = app.config['SECRET_KEY']
+    #         if request.headers.get('x-api-key') and request.headers.get('x-api-key') == key:
+    #             return view_function(*args, **kwargs)
+    #         elif request.args.get('key') and request.args.get('key') == key:
+    #             return view_function(*args, **kwargs)
+    #         else:
+    #             abort(401)
+    #     return decorated_function
 
     # import SQLalchemy models and db, attach app to db
-    from app.database.database import db, Fight, Alias
+    from app.database.database import db, Fight, Alias, User
     db.init_app(app)
 
     # create migrate object to handle creation/migration/upgrade of db
@@ -74,7 +76,7 @@ def create_app():
 
     # ---- stats endpoints ----
     @app.route('/api/stats/characters/<string:character_name>', methods=['GET'])
-    @require_apikey
+    # @require_apikey
     def endpointCharacterStats(character_name):
         # query all fights this char is in
         queryResult = queryFightsbyCharacter(character_name)
@@ -88,7 +90,7 @@ def create_app():
 
     # ---- fights endpoints ----
     @app.route('/api/fights/<int:id>', methods=['GET'])
-    @require_apikey
+    # @require_apikey
     def getFightByID(id):
         """returns a fight with given ID."""
         f = Fight.query.get(id) # query.get() gets the entry by primary key
@@ -99,7 +101,7 @@ def create_app():
             abort(404)
     
     @app.route('/api/fights/characters/<string:character_name>', methods=['GET'])
-    @require_apikey
+    # @require_apikey
     def getFightByCharacter(character_name):
         """
         returns all the fights that this character is in. or 404 if none found.
@@ -130,7 +132,7 @@ def create_app():
         return jsonify(filteredResult.to_dict(orient='records'))
 
     @app.route('/api/fights', methods=['GET'])
-    @require_apikey
+    # @require_apikey
     def getFights():
         """
         returns all fights or just those with given ID(s), if specified.
@@ -164,7 +166,7 @@ def create_app():
 
     # ---- screenshot endpoint(s) ----
     @app.route('/api/fights/<int:id>/image', methods=['GET'])
-    @require_apikey
+    # @require_apikey
     def getFightImage(id):
         f = Fight.query.get(id) # query.get() gets the entry by primary key
         fight = schema_fight.dump(f)
@@ -189,7 +191,7 @@ def create_app():
 
     # ---- fightIDs endpoints ----
     @app.route('/api/fightids/characters/<string:character_name>', methods=['GET'])
-    @require_apikey
+    # @require_apikey
     def getFightIDforCharacter(character_name):
         """
         returns a list of ints: the fight IDs for all fights that the character is in.
@@ -220,8 +222,8 @@ def create_app():
     # TODO: figure out if this should use a different endpoint (e.i. '/api/aliases/<character_name>)
     # or if it is better as a query string (e.i. '/api/aliases?name=character_name')
     # ... i'm not sure which is better or when to use which one...
-    @app.route('/api/aliases', methods=['GET', 'POST'])
-    @require_apikey
+    @app.route('/api/aliases', methods=['GET'])
+    # @require_apikey
     def getAliases():
         """returns or creates the character name / account name pair for a given character name."""
         if request.method == 'GET':
@@ -240,20 +242,20 @@ def create_app():
                 aliases = Alias.query.all()
                 return jsonify(schema_aliases.dump(aliases))
 
-        elif request.method == 'POST':
-            accountName = request.args.get('account_name')
-            characterName = request.args.get('character_name')
+        # elif request.method == 'POST':
+        #     accountName = request.args.get('account_name')
+        #     characterName = request.args.get('character_name')
 
-            if (accountName is None) or (characterName is None):
-                abort(400)
+        #     if (accountName is None) or (characterName is None):
+        #         abort(400)
 
-            a = Alias(character_name = characterName, account_name = accountName)
-            db.session.add(a)
-            db.session.commit()
-            # TODO: this probably should return code 201 - "created"
+        #     a = Alias(character_name = characterName, account_name = accountName)
+        #     db.session.add(a)
+        #     db.session.commit()
+        #     # TODO: this probably should return code 201 - "created"
 
-            # return jsonify({'character_name' : a.character_name, 'account_name' : a.account_name})
-            return schema_alias.dump(a)
+        #     # return jsonify({'character_name' : a.character_name, 'account_name' : a.account_name})
+        #     return schema_alias.dump(a)
         
 
     # ---- ladder (leaderboard) endpoints ----
@@ -264,6 +266,109 @@ def create_app():
     #     order = request.args.get('ord') # order (ascending or descending), default descending
     #     stat = request.args.get('stat') # stat in which to order by (wins, losses, win%, 5v5wins, 5v5losses, ect...), default win%
     #     return
+
+    # ---- authentication endpoints ----
+    @app.route('/auth/register', methods=['POST'])
+    def auth_register():
+        # get the post data
+        post_data = request.get_json()
+        # check if user already exists
+        user = User.query.filter_by(username=post_data['username']).first()
+        if not user:
+            try:
+                user = User(
+                    username=post_data['username'],
+                    password=post_data['password']
+                )
+
+                # insert the user
+                db.session.add(user)
+                db.session.commit()
+                # generate the auth token
+                auth_token = user.encode_auth_token(user.id)
+                responseObject = {
+                    'status': 'success',
+                    'message': 'Successfully registered.',
+                    'auth_token': auth_token
+                }
+                return (jsonify(responseObject), 201)
+            except Exception as e:
+                print(e)
+                responseObject = {
+                    'status': 'fail',
+                    'message': 'Some error occurred. Please try again.'
+                }
+                return (jsonify(responseObject), 401)
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': 'User already exists. Please Log in.',
+            }
+            return (jsonify(responseObject), 202)
+
+    @app.route('/auth/login', methods=['POST'])
+    def auth_login():
+        # get the post data
+        post_data = request.get_json()
+        try:
+            # fetch the user data
+            user = User.query.filter_by(
+                username=post_data['username']
+            ).first()
+            if user and bcrypt.check_password_hash(
+                user.password_hash, post_data['password']
+            ):
+                auth_token = user.encode_auth_token(user.id)
+                if auth_token:
+                    responseObject = {
+                        'status': 'success',
+                        'message': 'Successfully logged in.',
+                        'auth_token': auth_token
+                    }
+                    return (jsonify(responseObject), 200)
+            else:
+                responseObject = {
+                    'status': 'fail',
+                    'message': 'Username or password is incorrect.'
+                }
+                return (jsonify(responseObject), 404)
+        except Exception as e:
+            print(e)
+            responseObject = {
+                'status': 'fail',
+                'message': 'Try again'
+            }
+            return (jsonify(responseObject), 500)
+
+    @app.route('/auth/status', methods=['GET'])
+    def auth_status():
+        # get the auth token and decode it
+        auth_token = request.headers.get('Authorization')
+        if auth_token:
+            resp = User.decode_auth_token(auth_token)
+            if not isinstance(resp, str):
+                user = User.query.filter_by(id=resp).first()
+                responseObject = {
+                    'status': 'success',
+                    'data': {
+                        'user_id': user.id,
+                        'username': user.username,
+                        'admin': user.admin,
+                        'registered_on': user.registered_on
+                    }
+                }
+                return (jsonify(responseObject), 200)
+            responseObject = {
+                'status': 'fail',
+                'message': resp
+            }
+            return (jsonify(responseObject), 401)
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Provide a valid auth token.'
+            }
+            return (jsonify(responseObject), 401)
 
     # ---- index endpoint ----
     @app.route('/api/', methods=['GET'])
