@@ -220,22 +220,6 @@ def create_app():
                 aliases = Alias.query.all()
                 return jsonify(schema_aliases.dump(aliases))
 
-        # elif request.method == 'POST':
-        #     accountName = request.args.get('account_name')
-        #     characterName = request.args.get('character_name')
-
-        #     if (accountName is None) or (characterName is None):
-        #         abort(400)
-
-        #     a = Alias(character_name = characterName, account_name = accountName)
-        #     db.session.add(a)
-        #     db.session.commit()
-        #     # TODO: this probably should return code 201 - "created"
-
-        #     # return jsonify({'character_name' : a.character_name, 'account_name' : a.account_name})
-        #     return schema_alias.dump(a)
-        
-
     # ---- ladder (leaderboard) endpoints ----
     # @app.route('/api/ladder/characters', methods=['GET', 'POST'])
     # def getLadderCharacter():
