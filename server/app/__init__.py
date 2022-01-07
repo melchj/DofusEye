@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify, abort
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -25,7 +26,24 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object("config.Config")
     # print(app.config)
-    CORS(app)
+
+    flask_env = app.config['FLASK_ENV']
+
+    origins = []
+    if flask_env == "development":
+        origins = [
+            "http://localhost:3000",
+            "http://dev.localhost:3000",
+            "http://localhost:3001",
+            "http://dev.localhost:3001",
+        ]
+    elif flask_env == "production":
+        origins = [
+            "https://www.dofuseye.com",
+            "https://dofuseye.com",
+        ]
+    CORS(app, resources={r"/*": {'origins': origins}}, supports_credentials=True)
+
     bcrypt.init_app(app)
 
     # import SQLalchemy models and db, attach app to db
