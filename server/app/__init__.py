@@ -42,7 +42,7 @@ def create_app():
             "https://www.dofuseye.com",
             "https://dofuseye.com",
         ]
-    print(f"CORS origins: {origins}")
+    # print(f"CORS origins: {origins}")
     CORS(app, resources={r"/*": {'origins': origins}}, supports_credentials=True)
 
     bcrypt.init_app(app)
