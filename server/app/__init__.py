@@ -254,6 +254,16 @@ def create_app():
 
             # return jsonify({'character_name' : a.character_name, 'account_name' : a.account_name})
             return schema_alias.dump(a)
+        
+
+    # ---- ladder (leaderboard) endpoints ----
+    # @app.route('/api/ladder/characters', methods=['GET', 'POST'])
+    # @require_apikey
+    # def getLadderCharacter():
+    #     num = request.args.get('n') # number of results, default to 20
+    #     order = request.args.get('ord') # order (ascending or descending), default descending
+    #     stat = request.args.get('stat') # stat in which to order by (wins, losses, win%, 5v5wins, 5v5losses, ect...), default win%
+    #     return
 
     # ---- index endpoint ----
     @app.route('/api/', methods=['GET'])
