@@ -28,21 +28,6 @@ def create_app():
     CORS(app)
     bcrypt.init_app(app)
 
-    # TODO: idk... make sure this is the "best" way to authenticate with a secret key
-    # create decorator function to require api key
-    # def require_apikey(view_function):
-    #     @wraps(view_function)
-    #     # the new, post-decoration function. Note *args and **kwargs here.
-    #     def decorated_function(*args, **kwargs):
-    #         key = app.config['SECRET_KEY']
-    #         if request.headers.get('x-api-key') and request.headers.get('x-api-key') == key:
-    #             return view_function(*args, **kwargs)
-    #         elif request.args.get('key') and request.args.get('key') == key:
-    #             return view_function(*args, **kwargs)
-    #         else:
-    #             abort(401)
-    #     return decorated_function
-
     # import SQLalchemy models and db, attach app to db
     from app.database.database import db, Fight, Alias, User
     db.init_app(app)
@@ -76,7 +61,6 @@ def create_app():
 
     # ---- stats endpoints ----
     @app.route('/api/stats/characters/<string:character_name>', methods=['GET'])
-    # @require_apikey
     def endpointCharacterStats(character_name):
         # query all fights this char is in
         queryResult = queryFightsbyCharacter(character_name)
@@ -90,7 +74,6 @@ def create_app():
 
     # ---- fights endpoints ----
     @app.route('/api/fights/<int:id>', methods=['GET'])
-    # @require_apikey
     def getFightByID(id):
         """returns a fight with given ID."""
         f = Fight.query.get(id) # query.get() gets the entry by primary key
@@ -101,7 +84,6 @@ def create_app():
             abort(404)
     
     @app.route('/api/fights/characters/<string:character_name>', methods=['GET'])
-    # @require_apikey
     def getFightByCharacter(character_name):
         """
         returns all the fights that this character is in. or 404 if none found.
@@ -132,7 +114,6 @@ def create_app():
         return jsonify(filteredResult.to_dict(orient='records'))
 
     @app.route('/api/fights', methods=['GET'])
-    # @require_apikey
     def getFights():
         """
         returns all fights or just those with given ID(s), if specified.
@@ -166,7 +147,6 @@ def create_app():
 
     # ---- screenshot endpoint(s) ----
     @app.route('/api/fights/<int:id>/image', methods=['GET'])
-    # @require_apikey
     def getFightImage(id):
         f = Fight.query.get(id) # query.get() gets the entry by primary key
         fight = schema_fight.dump(f)
@@ -191,7 +171,6 @@ def create_app():
 
     # ---- fightIDs endpoints ----
     @app.route('/api/fightids/characters/<string:character_name>', methods=['GET'])
-    # @require_apikey
     def getFightIDforCharacter(character_name):
         """
         returns a list of ints: the fight IDs for all fights that the character is in.
@@ -223,7 +202,6 @@ def create_app():
     # or if it is better as a query string (e.i. '/api/aliases?name=character_name')
     # ... i'm not sure which is better or when to use which one...
     @app.route('/api/aliases', methods=['GET'])
-    # @require_apikey
     def getAliases():
         """returns or creates the character name / account name pair for a given character name."""
         if request.method == 'GET':
@@ -260,7 +238,6 @@ def create_app():
 
     # ---- ladder (leaderboard) endpoints ----
     # @app.route('/api/ladder/characters', methods=['GET', 'POST'])
-    # @require_apikey
     # def getLadderCharacter():
     #     num = request.args.get('n') # number of results, default to 20
     #     order = request.args.get('ord') # order (ascending or descending), default descending
