@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getFightsByCharacter } from '../services/ApiService';
+import { getFightsByCharacter, getFightsList } from '../services/ApiService';
 import Fight from './Fight';
 
 // class FightList extends React.Component {
@@ -19,19 +19,27 @@ const FightList = (props) => {
 
     const fetchData = () => {
         // return if target character is empty
-        if (props.target == '') {
-            return;
-        }
+        if (props.target) {
 
-        // call API to get a list of fight data
-        // which is passed to child Fight components (component and sub components re-rendered when state updates)
-        getFightsByCharacter(props.target, checkWin, checkLoss, checkAttack, checkDef)
-        .then((resp) => {
-            setFightDatas(resp);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+            // call API to get a list of fight data
+            // which is passed to child Fight components (component and sub components re-rendered when state updates)
+            getFightsByCharacter(props.target, checkWin, checkLoss, checkAttack, checkDef)
+            .then((resp) => {
+                setFightDatas(resp);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        } else {
+            // else, when target is not set, we get the fights by the list given
+            getFightsList(props.fightIDs)
+            .then((resp) => {
+                setFightDatas(resp);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        }
     }
 
     const renderFights = () => {
@@ -63,6 +71,7 @@ const FightList = (props) => {
             <div className="col-12">
                 <h2>Showing {fightDatas && fightDatas.length} fights:</h2>
             </div>
+            {/* TODO: dont show the filters if there is no props.target... they are pointless in that case */}
             <div className='col-12'>
                 <div className="btn-group me-3" role="group">
                     <input type="checkbox" className="btn-check" name="checkWin" id="checkWin" onChange={() => {setCheckWin(!checkWin)}} checked={checkWin}/>
