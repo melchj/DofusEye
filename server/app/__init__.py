@@ -1,15 +1,14 @@
-import os
-from flask import Flask, request, jsonify, abort
+from flask import Flask, Response, request, jsonify, abort
 from flask_migrate import Migrate
 from flask_cors import CORS
 from sqlalchemy import or_
-from functools import wraps
 from app.stats import getCharacterStats
 from app.stats import getCharacterClass
 import boto3
 from botocore.config import Config
 from app.filters import filterFights
 from flask_bcrypt import Bcrypt
+from app.wrappers import require_token, require_admin_token
 
 # TODO: request parser type thing? to better return errors when request doesnt include required info?
 # see:
@@ -295,9 +294,7 @@ def create_app():
             user = User.query.filter_by(
                 username=post_data['username']
             ).first()
-            if user and bcrypt.check_password_hash(
-                user.password_hash, post_data['password']
-            ):
+            if user and bcrypt.check_password_hash(user.password_hash, post_data['password']):
                 auth_token = user.encode_auth_token(user.id)
                 if auth_token:
                     responseObject = {
@@ -349,6 +346,16 @@ def create_app():
                 'message': 'Provide a valid auth token.'
             }
             return (jsonify(responseObject), 401)
+    
+    @app.route('/api/test', methods=['GET'])
+    @require_token
+    def token_test():
+        return Response('bruh it worked i think')
+
+    @app.route('/api/test2', methods=['GET'])
+    @require_admin_token
+    def token_test2():
+        return Response('bruh it worked i think, ADMIIIIIIN')
 
     # ---- index endpoint ----
     @app.route('/api/', methods=['GET'])
