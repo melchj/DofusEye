@@ -6,8 +6,10 @@ from flask import current_app
 
 db = SQLAlchemy()
 
+# TODO: learn more about declaritive base stuff, maybe use it instead of db.Model here...
+# https://docs.sqlalchemy.org/en/14/orm/extensions/declarative/basic_use.html
+
 # ---- SQLalchemy Models ----
-# TODO: add a Base class that these inherit from, instead of db.Model?
 class Fight(db.Model):
     __tablename__ = "perc_prism"
 

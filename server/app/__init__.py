@@ -162,6 +162,75 @@ def create_app():
         else:
             f = Fight.query.all()
             return jsonify(schema_fights.dump(f))
+    
+    @app.route('/api/fights/post', methods=['POST'])
+    @require_admin_token
+    def postFight():
+        '''this is endpoint used by discord bot (for now) to post fights after they are made'''
+        post_data = request.get_json()
+        fight = Fight(
+            modified = 0,
+            guild_id = post_data['guild_id'],
+            channel_id = post_data['channel_id'],
+            date = post_data['date'],
+            file_path = post_data['file_path'],
+            sword = post_data['sword'],
+            w1_name  = post_data['w1_name'],
+            w1_class = post_data['w1_class'],
+            w1_dead  = post_data['w1_dead'],
+            w2_name  = post_data['w2_name'],
+            w2_class = post_data['w2_class'],
+            w2_dead  = post_data['w2_dead'],
+            w3_name  = post_data['w3_name'],
+            w3_class = post_data['w3_class'],
+            w3_dead  = post_data['w3_dead'],
+            w4_name  = post_data['w4_name'],
+            w4_class = post_data['w4_class'],
+            w4_dead  = post_data['w4_dead'],
+            w5_name  = post_data['w5_name'],
+            w5_class = post_data['w5_class'],
+            w5_dead  = post_data['w5_dead'],
+            l1_name  = post_data['l1_name'],
+            l1_class = post_data['l1_class'],
+            l1_dead  = post_data['l1_dead'],
+            l2_name  = post_data['l2_name'],
+            l2_class = post_data['l2_class'],
+            l2_dead  = post_data['l2_dead'],
+            l3_name  = post_data['l3_name'],
+            l3_class = post_data['l3_class'],
+            l3_dead  = post_data['l3_dead'],
+            l4_name  = post_data['l4_name'],
+            l4_class = post_data['l4_class'],
+            l4_dead  = post_data['l4_dead'],
+            l5_name  = post_data['l5_name'],
+            l5_class = post_data['l5_class'],
+            l5_dead  = post_data['l5_dead']
+        )
+        db.session.add(fight)
+
+        db.session.flush()
+        print(f"added fight: id={fight.fight_id}")
+        # TODO: this assumes every file is PNG file type. need to allow for all file types
+        fight.file_path = f"saved/{fight.guild_id}/{fight.channel_id}/{fight.fight_id}.png"
+        db.session.commit()
+
+        # connect to aws s3, respond to this request with presigned URL for requester to upload the screenshot
+        my_config = Config(
+            signature_version='s3v4',
+            region_name='us-east-2'
+            )
+        s3 = boto3.client(
+            's3',
+            aws_access_key_id=app.config['S3_ACCESS_KEY'],
+            aws_secret_access_key=app.config['S3_SECRET_KEY'],
+            config=my_config
+        )
+        url = s3.generate_presigned_post(app.config['S3_BUCKET_NAME'], fight.file_path, ExpiresIn = 1800)
+
+        return (jsonify({
+            "fight_id": fight.fight_id,
+            "upload_url": url
+        }), 201)
 
     # ---- screenshot endpoint(s) ----
     @app.route('/api/fights/<int:id>/image', methods=['GET'])
@@ -178,10 +247,13 @@ def create_app():
             )
 
         # connect to aws s3, generate and return a presigned URL for the image
-        s3 = boto3.client(  's3',
-                            aws_access_key_id=app.config['S3_ACCESS_KEY'],
-                            aws_secret_access_key=app.config['S3_SECRET_KEY'],
-                            config=my_config)
+        # TODO: should all boto client objects be shared? is it bad to re-create and log in like this each time?
+        s3 = boto3.client(
+            's3',
+            aws_access_key_id=app.config['S3_ACCESS_KEY'],
+            aws_secret_access_key=app.config['S3_SECRET_KEY'],
+            config=my_config
+        )
 
         url = s3.generate_presigned_url('get_object', Params={'Bucket': app.config['S3_BUCKET_NAME'], 'Key': path}, ExpiresIn = 600)
         # return redirect(url, code=302)
@@ -237,14 +309,6 @@ def create_app():
                 # if no character_name is specified, return all aliases
                 aliases = Alias.query.all()
                 return jsonify(schema_aliases.dump(aliases))
-
-    # ---- ladder (leaderboard) endpoints ----
-    # @app.route('/api/ladder/characters', methods=['GET', 'POST'])
-    # def getLadderCharacter():
-    #     num = request.args.get('n') # number of results, default to 20
-    #     order = request.args.get('ord') # order (ascending or descending), default descending
-    #     stat = request.args.get('stat') # stat in which to order by (wins, losses, win%, 5v5wins, 5v5losses, ect...), default win%
-    #     return
 
     # ---- authentication endpoints ----
     @app.route('/auth/register', methods=['POST'])
