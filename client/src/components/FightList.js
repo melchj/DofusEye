@@ -32,13 +32,15 @@ const FightList = (props) => {
             })
         } else {
             // else, when target is not set, we get the fights by the list given
-            getFightsList(props.fightIDs)
-            .then((resp) => {
-                setFightDatas(resp);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+            if (props.fightIDs.length > 0) {
+                getFightsList(props.fightIDs)
+                .then((resp) => {
+                    setFightDatas(resp);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            }
         }
     }
 
