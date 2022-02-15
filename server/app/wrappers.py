@@ -14,7 +14,7 @@ def require_token(func):
             if not isinstance(resp, str):
                 return func(*args, **kwargs)
             else:
-                return Response(resp)
+                return Response(resp, status=401)
     
     return check_token
 
@@ -31,8 +31,8 @@ def require_admin_token(func):
                 if user.admin:
                     return func(*args, **kwargs)
                 else:
-                    return Response('Request failed. Admin access required.')
+                    return Response('Request failed. Admin access required.', status=403)
             else:
-                return Response(resp)
+                return Response(resp, status=401)
     
     return check_token
