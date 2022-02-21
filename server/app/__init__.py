@@ -341,13 +341,13 @@ def create_app():
                     'status': 'fail',
                     'message': 'Some error occurred. Please try again.'
                 }
-                return (jsonify(responseObject), 401)
+                return (jsonify(responseObject), 500)
         else:
             responseObject = {
                 'status': 'fail',
                 'message': 'User already exists. Please Log in.',
             }
-            return (jsonify(responseObject), 202)
+            return (jsonify(responseObject), 409)
 
     @app.route('/auth/login', methods=['POST'])
     def auth_login():
@@ -377,7 +377,7 @@ def create_app():
             print(e)
             responseObject = {
                 'status': 'fail',
-                'message': 'Try again'
+                'message': 'Request failed due to error.'
             }
             return (jsonify(responseObject), 500)
 
