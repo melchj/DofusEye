@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, Response, request, jsonify, abort
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -6,7 +7,7 @@ from app.stats import getCharacterStats
 from app.stats import getCharacterClass
 import boto3
 from botocore.config import Config
-from app.filters import filterFights
+from app.filters import filterFights, charactersInFights
 from flask_bcrypt import Bcrypt
 from app.wrappers import require_token, require_admin_token
 
@@ -57,7 +58,7 @@ def create_app():
     from app.schema import ma, schema_alias, schema_fight, schema_fights, schema_aliases
     ma.init_app(app)
 
-    # query function(s)
+    # ---- DB query functions ----
     def queryFightsbyCharacter(character_name):
         """returns query results of all fights with this character name."""
         # TODO: need to filter out results that come from testing channels. see discord bot query
@@ -76,6 +77,15 @@ def create_app():
             )
         )
         return queryResult
+    
+    def queryFightsbyDate(start_date:datetime, end_date:datetime):
+        """returns all fights between given dates, or open ended in either direction if a date is None."""
+        result = db.session.query(Fight)
+        if start_date:
+            result = result.filter(Fight.date >= start_date.timestamp())
+        if end_date:
+            result = result.filter(Fight.date <= end_date.timestamp())
+        return result
 
     # ---- stats endpoints ----
     @app.route('/api/stats/characters/<string:character_name>', methods=['GET'])
@@ -231,6 +241,70 @@ def create_app():
             "fight_id": fight.fight_id,
             "upload_url": url
         }), 201)
+
+    # ---- leaderboard endpoint(s) ----
+    @app.route('/api/characters', methods=['GET'])   
+    def getCharacters():
+        """
+        returns a list of characters.
+        filters and sorting can be passed via query.
+            start_date = unix timestamp
+            end_date = unix timestamp
+            class = filters for specified class
+            account = filters for specified account
+            discord_server = (int) filters for specified discord server id
+        paginated:
+            _page = page to retrieve. 1-indexed. default 1.
+            _per_page = number per page. default 10. max 100.
+        """
+        # parse page and per_page from query:
+        _page = request.args.get('_page')
+        page = int(_page) if _page else 1
+
+        _per_page = request.args.get('_per_page')
+        per_page = min(int(_per_page), 100) if _per_page else 10
+
+        # parse sort and filters from query:
+        # TODO: there must be a more elegant way to do this "filters" bit??? this seems sketchy
+        filters = {}
+        _start_date = request.args.get('start_date')
+        filters['start_date'] = datetime.fromtimestamp(int(_start_date)) if _start_date else None
+        _end_date = request.args.get('end_date')
+        filters['end_date'] = datetime.fromtimestamp(int(_end_date)) if _end_date else None
+        filters['class'] = request.args.get('class')
+        filters['account'] = request.args.get('account')
+        _discord = request.args.get('discord_server')
+        filters['discord_server'] = int(_discord) if _discord else None
+
+        print(f"query args: {request.args}")
+        print(f"page = {page}")
+        print(f"per_page = {per_page}")
+        print(f'filters: {filters}')
+
+        # query the fights db, applying time range filters
+        query = queryFightsbyDate(filters['start_date'], filters['end_date'])
+        fightsList = schema_fights.dump(query)
+        # get the list of characters (and win/loss numbers) out of this fight list
+        # charactersList = charactersInFights(fightsList)
+        # print(fightsList)
+
+        return (jsonify({
+            "total_matched": "some test value",
+            "page": page,
+            "per_page": per_page,
+            "data": [
+                {
+                    "id": 1,
+                    "test3": "does this work?",
+                    "test4": "not sure"
+                },
+                {
+                    "id": 2,
+                    "test3": "does this also work?",
+                    "test4": "still not sure"
+                }
+            ]
+        }), 200)
 
     # ---- screenshot endpoint(s) ----
     @app.route('/api/fights/<int:id>/image', methods=['GET'])
@@ -410,16 +484,6 @@ def create_app():
                 'message': 'Provide a valid auth token.'
             }
             return (jsonify(responseObject), 401)
-    
-    @app.route('/api/test', methods=['GET'])
-    @require_token
-    def token_test():
-        return Response('bruh it worked i think')
-
-    @app.route('/api/test2', methods=['GET'])
-    @require_admin_token
-    def token_test2():
-        return Response('bruh it worked i think, ADMIIIIIIN')
 
     # ---- index endpoint ----
     @app.route('/api/', methods=['GET'])

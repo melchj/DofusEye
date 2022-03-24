@@ -64,3 +64,15 @@ def filterFights(fightList, charName, attacks=True, defs=True, wins=True, losses
     fights['l4_dead'] = fights['l4_dead'].fillna(0)
     fights['l5_dead'] = fights['l5_dead'].fillna(0)
     return fights
+
+def charactersInFights(fightList):
+    '''
+    takes a list of fights and returns a list of all characters in these fights.
+    the list of characters includes basic stats:
+        - attack wins
+        - attack losses
+        - def wins
+        - def losses
+    for each character listed.
+    '''
+    pass
