@@ -18,7 +18,7 @@ def filterFights(fightList, charName, attacks=True, defs=True, wins=True, losses
     #     return None
 
     # TODO: add filters for 5v5, 5v4, etc.
-    print(f"gonna filter list with target '{charName}'... a={attacks}, d={defs}, w={wins}, l={losses}")
+    # print(f"gonna filter list with target '{charName}'... a={attacks}, d={defs}, w={wins}, l={losses}")
     fights = pd.DataFrame(fightList)
     filters = pd.DataFrame()
 
@@ -75,4 +75,48 @@ def charactersInFights(fightList):
         - def losses
     for each character listed.
     '''
-    pass
+    fights = pd.DataFrame(fightList)
+
+    print(fights)
+
+    # TODO: there must be a better way to do this with a dataframe than this "dictionary of lists" appreach
+    # character stats list-like object
+    charList = {}
+
+    # function to add up character wins/losses, to be applied on each row of fightslist df
+    def addCharacterScores(fight):
+        # print(f"-----fight #{fight['fight_id']}-----")
+        # loop thru all positions
+        positions = ['w1', 'w2', 'w3', 'w4', 'w5', 'l1', 'l2', 'l3', 'l4', 'l5']
+        sword = fight['sword'] if fight['sword'] else 'w1'
+        for p in positions:
+            name = fight[f"{p}_name"]
+            if name is None:
+                continue
+            # result for this player? 0 = attack win, 1 = att loss, 2 = def win, 3 = def loss
+            attack = 0 if (p[0] == sword[0].lower()) else 2
+            win = 0 if (p[0] == 'w') else 1
+            res = attack + win
+            
+            # add to dictionary of lists object
+            if name in charList:
+                charList[name][res] = charList[name][res] + 1
+            else:
+                charList[name] = [0, 0, 0, 0, fight[f"{p}_class"]]
+                charList[name][res] = 1
+
+    # apply to all rows, "axis=1" so the function recieve each "row" of the df
+    fights.apply(addCharacterScores, axis=1)
+    
+    # convert dictionary of lists to a dataframe
+    charDF = pd.DataFrame.from_dict(charList, orient='index')
+    charDF.columns = ['AWins', 'ALosses', 'DWins', 'DLosses', 'Class']
+
+    # add a few other stats
+    charDF['TWins'] = charDF['AWins'] + charDF['DWins']
+    charDF['TLosses'] = charDF['ALosses'] + charDF['DLosses']
+    charDF['Twr'] = charDF['TWins'] / (charDF['TWins'] + charDF['TLosses'])
+    charDF['TFights'] = charDF['TWins'] + charDF['TLosses']
+    # print(charDF)
+
+    return charDF

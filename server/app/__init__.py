@@ -253,6 +253,8 @@ def create_app():
             class = filters for specified class
             account = filters for specified account
             discord_server = (int) filters for specified discord server id
+            _sort = wr (default), wins, numfights
+            min_fights = min number of total fights to include
         paginated:
             _page = page to retrieve. 1-indexed. default 1.
             _per_page = number per page. default 10. max 100.
@@ -275,18 +277,45 @@ def create_app():
         filters['account'] = request.args.get('account')
         _discord = request.args.get('discord_server')
         filters['discord_server'] = int(_discord) if _discord else None
+        _sort = request.args.get('_sort')
+        filters['sort'] = _sort if _sort else 'wr'
+        _min_fights = request.args.get('min_fights')
+        filters['min_fights'] = int(_min_fights) if _min_fights else None
 
         print(f"query args: {request.args}")
         print(f"page = {page}")
         print(f"per_page = {per_page}")
         print(f'filters: {filters}')
 
-        # query the fights db, applying time range filters
+        # TODO: add filter for 5v5 only
+
+        # query the fights db, applying fight level filters
         query = queryFightsbyDate(filters['start_date'], filters['end_date'])
-        fightsList = schema_fights.dump(query)
+        # TODO: apply discord server filter
         # get the list of characters (and win/loss numbers) out of this fight list
-        # charactersList = charactersInFights(fightsList)
-        # print(fightsList)
+        fightsList = schema_fights.dump(query)
+        characterList = charactersInFights(fightsList)
+
+        # apply character level filters
+        if filters['class']:
+            characterList = characterList[characterList['Class'] == filters['class']]
+        if filters['min_fights']:
+            characterList = characterList[characterList['TFights'] >= filters['min_fights']]
+        # TODO: account filter here?
+
+        # apply sorting
+        if filters['sort'].lower() == 'wins':
+            characterList = characterList.sort_values(by=['TWins', 'Twr'], ascending=False)
+        elif filters['sort'].lower() == 'numfights':
+            characterList = characterList.sort_values(by=['TFights', 'Twr'], ascending=False)
+        elif filters['sort'].lower() == 'wr':
+            characterList = characterList.sort_values(by=['Twr','TFights'], ascending=False)
+
+        # print(characterList)
+
+        # apply pagination
+
+        # print(characterList)
 
         return (jsonify({
             "total_matched": "some test value",
