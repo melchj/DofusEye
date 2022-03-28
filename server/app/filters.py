@@ -77,7 +77,7 @@ def charactersInFights(fightList):
     '''
     fights = pd.DataFrame(fightList)
 
-    print(fights)
+    # print(fights)
 
     # TODO: there must be a better way to do this with a dataframe than this "dictionary of lists" appreach
     # character stats list-like object

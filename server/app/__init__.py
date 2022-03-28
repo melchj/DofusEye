@@ -282,10 +282,10 @@ def create_app():
         _min_fights = request.args.get('min_fights')
         filters['min_fights'] = int(_min_fights) if _min_fights else None
 
-        print(f"query args: {request.args}")
-        print(f"page = {page}")
-        print(f"per_page = {per_page}")
-        print(f'filters: {filters}')
+        # print(f"query args: {request.args}")
+        # print(f"page = {page}")
+        # print(f"per_page = {per_page}")
+        # print(f'filters: {filters}')
 
         # TODO: add filter for 5v5 only
 
@@ -311,11 +311,13 @@ def create_app():
         elif filters['sort'].lower() == 'wr':
             characterList = characterList.sort_values(by=['Twr','TFights'], ascending=False)
 
-        # print(characterList)
-
         # apply pagination
+        characterList = characterList.reset_index()
+        start = per_page * (page - 1)
+        end = per_page * page
+        pageList = characterList.iloc[start:end]
 
-        # print(characterList)
+        print(pageList)
 
         return (jsonify({
             "total_matched": "some test value",
