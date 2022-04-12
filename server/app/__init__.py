@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import Flask, Response, request, jsonify, abort
 from flask_migrate import Migrate
 from flask_cors import CORS
+from pandas import DataFrame
 from sqlalchemy import or_
 from app.stats import getCharacterStats
 from app.stats import getCharacterClass
@@ -312,29 +313,24 @@ def create_app():
             characterList = characterList.sort_values(by=['Twr','TFights'], ascending=False)
 
         # apply pagination
-        characterList = characterList.reset_index()
+        characterList.reset_index(inplace=True)
+        total_matched = len(characterList)
         start = per_page * (page - 1)
         end = per_page * page
-        pageList = characterList.iloc[start:end]
+        pageList : DataFrame = characterList.iloc[start:end].copy()
+        pageList.reset_index(inplace=True)
+        pageList.rename(columns={'level_0': 'place', 'index':'name'}, inplace=True)
+        # print(pageList)
 
-        print(pageList)
-
-        return (jsonify({
-            "total_matched": "some test value",
-            "page": page,
+        returnData = pageList.to_dict(orient='records')
+        return (jsonify(
+        {
+            "total_matched": total_matched,
+            "page:": page,
             "per_page": per_page,
-            "data": [
-                {
-                    "id": 1,
-                    "test3": "does this work?",
-                    "test4": "not sure"
-                },
-                {
-                    "id": 2,
-                    "test3": "does this also work?",
-                    "test4": "still not sure"
-                }
-            ]
+            # "sort": filters['sort'],
+            "filters": filters,
+            "data": returnData
         }), 200)
 
     # ---- screenshot endpoint(s) ----
