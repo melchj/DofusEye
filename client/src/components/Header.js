@@ -15,6 +15,7 @@ export const Header = () => {
                     <span className='navbar-text'>Note: this site is unfinished; created as a learning exercise by someone who has never done this before. - Chonk</span>
                     <div className='navbar-nav'>
                         <Link to='/character' className='nav-link'>Characters</Link>
+                        <Link to='/leaderboard' className='nav-link'>Leaderboard</Link>
                         <Link to='/account' className='nav-link'>Accounts</Link>
                     </div>
                 </div>
