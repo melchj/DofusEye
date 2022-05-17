@@ -3,9 +3,6 @@ import axios from 'axios';
 // TODO: no reason to copy/paste a function each time i want to access new endpoint...
 // theses should each refer back to some base function, passing the url
 
-// TODO: should this just be for all API interaction? why is this class set up for just "FIGHT" services?
-// i am going to use it for stat calls anway... to refactor later i suppose
-
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
 
 // const api = axios.create({
@@ -96,6 +93,17 @@ export async function getBasicCharacterStats(character_name) {
 
 export function getFightImage(fightID) {
     const url = '/api/fights/'+fightID+'/image?key='+process.env.REACT_APP_API_KEY;
+    return axios.get(url).then((response) => {
+        return response.data;
+    });
+}
+
+export function getCharLeaderboard(start_timestamp, end_timestamp, class_name, sort, min_fights, page, per_page){
+    // TODO: clean this up, handle if one of the arguments is null or something
+    if (class_name == 'all') {
+        class_name = ''
+    }
+    const url = '/api/characters?_page='+page+'&_per_page='+per_page+'&class='+class_name+'&min_fights='+min_fights+'&start_date='+start_timestamp+'&end_date='+end_timestamp+'&_sort='+sort
     return axios.get(url).then((response) => {
         return response.data;
     });
