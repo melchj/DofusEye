@@ -271,9 +271,9 @@ def create_app():
         # TODO: there must be a more elegant way to do this "filters" bit??? this seems sketchy
         filters = {}
         _start_date = request.args.get('start_date')
-        filters['start_date'] = datetime.fromtimestamp(int(_start_date)) if _start_date else None
+        filters['start_date'] = datetime.fromtimestamp(int(float(_start_date))) if _start_date else None
         _end_date = request.args.get('end_date')
-        filters['end_date'] = datetime.fromtimestamp(int(_end_date)) if _end_date else None
+        filters['end_date'] = datetime.fromtimestamp(int(float(_end_date))) if _end_date else None
         filters['class'] = request.args.get('class')
         filters['account'] = request.args.get('account')
         _discord = request.args.get('discord_server')
@@ -297,32 +297,36 @@ def create_app():
         fightsList = schema_fights.dump(query)
         characterList = charactersInFights(fightsList)
 
-        # apply character level filters
-        if filters['class']:
-            characterList = characterList[characterList['Class'] == filters['class']]
-        if filters['min_fights']:
-            characterList = characterList[characterList['TFights'] >= filters['min_fights']]
-        # TODO: account filter here?
+        returnData = []
+        total_matched = 0
+        # check to see if any characters were found with the given filters...
+        if characterList is not None:
+            # apply character level filters
+            if filters['class']:
+                characterList = characterList[characterList['Class'] == filters['class']]
+            if filters['min_fights']:
+                characterList = characterList[characterList['TFights'] >= filters['min_fights']]
+            # TODO: account filter here?
 
-        # apply sorting
-        if filters['sort'].lower() == 'wins':
-            characterList = characterList.sort_values(by=['TWins', 'Twr'], ascending=False)
-        elif filters['sort'].lower() == 'numfights':
-            characterList = characterList.sort_values(by=['TFights', 'Twr'], ascending=False)
-        elif filters['sort'].lower() == 'wr':
-            characterList = characterList.sort_values(by=['Twr','TFights'], ascending=False)
+            # apply sorting
+            if filters['sort'].lower() == 'wins':
+                characterList = characterList.sort_values(by=['TWins', 'Twr'], ascending=False)
+            elif filters['sort'].lower() == 'numfights':
+                characterList = characterList.sort_values(by=['TFights', 'Twr'], ascending=False)
+            elif filters['sort'].lower() == 'wr':
+                characterList = characterList.sort_values(by=['Twr','TFights'], ascending=False)
 
-        # apply pagination
-        characterList.reset_index(inplace=True)
-        total_matched = len(characterList)
-        start = per_page * (page - 1)
-        end = per_page * page
-        pageList : DataFrame = characterList.iloc[start:end].copy()
-        pageList.reset_index(inplace=True)
-        pageList.rename(columns={'level_0': 'place', 'index':'name'}, inplace=True)
-        # print(pageList)
+            # apply pagination
+            characterList.reset_index(inplace=True)
+            total_matched = len(characterList)
+            start = per_page * (page - 1)
+            end = per_page * page
+            pageList : DataFrame = characterList.iloc[start:end].copy()
+            pageList.reset_index(inplace=True)
+            pageList.rename(columns={'level_0': 'place', 'index':'name'}, inplace=True)
+            # print(pageList)
 
-        returnData = pageList.to_dict(orient='records')
+            returnData = pageList.to_dict(orient='records')
         return (jsonify(
         {
             "total_matched": total_matched,

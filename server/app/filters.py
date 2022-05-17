@@ -107,6 +107,10 @@ def charactersInFights(fightList):
 
     # apply to all rows, "axis=1" so the function recieve each "row" of the df
     fights.apply(addCharacterScores, axis=1)
+
+    # return None if charList is empty
+    if len(charList) == 0:
+        return None
     
     # convert dictionary of lists to a dataframe
     charDF = pd.DataFrame.from_dict(charList, orient='index')
