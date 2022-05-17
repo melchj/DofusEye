@@ -8,9 +8,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { getCharLeaderboard } from "../services/ApiService";
 
 const CharLeaderboardQuery = () => {
+    // default filter dates
+    var date2 = new Date()
+    var date1 = new Date()
+    date1.setDate(date2.getDate() - 7) // 7 days prior to today
     // set up input states
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(date1);
+    const [endDate, setEndDate] = useState(date2);
     const [minFightsValue, setMinFightsValue] = useState(1)
     const [classValue, setClassValue] = useState('all');
     const [sortValue, setSortValue] = useState('wr');
