@@ -251,7 +251,7 @@ def create_app():
         filters and sorting can be passed via query.
             start_date = unix timestamp
             end_date = unix timestamp
-            class = filters for specified class
+            dclass = filters for specified dofus class
             account = filters for specified account
             discord_server = (int) filters for specified discord server id
             _sort = wr (default), wins, numfights
@@ -274,7 +274,7 @@ def create_app():
         filters['start_date'] = datetime.fromtimestamp(int(float(_start_date))) if _start_date else None
         _end_date = request.args.get('end_date')
         filters['end_date'] = datetime.fromtimestamp(int(float(_end_date))) if _end_date else None
-        filters['class'] = request.args.get('class')
+        filters['dclass'] = request.args.get('dclass')
         filters['account'] = request.args.get('account')
         _discord = request.args.get('discord_server')
         filters['discord_server'] = int(_discord) if _discord else None
@@ -288,7 +288,22 @@ def create_app():
         # print(f"per_page = {per_page}")
         # print(f'filters: {filters}')
 
-        # TODO: add filter for 5v5 only
+        # 
+        # 
+        # 
+        # 
+        # 
+        #         # TODO: add filter for 5v5 only!!!!!!!!!!
+        # 
+        # 
+        # 
+        # 
+        # 
+        # 
+
+        # if dofus class filter is "all", treat it the same as no filter on dofus class
+        if filters['dclass'] == 'all':
+            filters['dclass'] = None
 
         # query the fights db, applying fight level filters
         query = queryFightsbyDate(filters['start_date'], filters['end_date'])
@@ -302,8 +317,8 @@ def create_app():
         # check to see if any characters were found with the given filters...
         if characterList is not None:
             # apply character level filters
-            if filters['class']:
-                characterList = characterList[characterList['Class'] == filters['class']]
+            if filters['dclass']:
+                characterList = characterList[characterList['Class'] == filters['dclass']]
             if filters['min_fights']:
                 characterList = characterList[characterList['TFights'] >= filters['min_fights']]
             # TODO: account filter here?
