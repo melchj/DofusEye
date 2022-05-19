@@ -40,7 +40,7 @@ const CharacterPage = () => {
             console.log(error);
         });
 
-        // update the Stats component (but setting the character name in this component's state)
+        // update the Stats component (by setting the character name in this component's state)
         setCharacterName(character_name);
     }
 

@@ -15,33 +15,21 @@ const CharLeaderboardQuery = () => {
     // set up input states
     const [startDate, setStartDate] = useState(date1);
     const [endDate, setEndDate] = useState(date2);
-    const [minFightsValue, setMinFightsValue] = useState(1)
-    const [classValue, setClassValue] = useState('all');
+    const [minFightsValue, setMinFightsValue] = useState(25)
+    const [dclassValue, setDClassValue] = useState('all');
     const [sortValue, setSortValue] = useState('wr');
     // TODO: make the formatting look nice :D
 
     const navigate = useNavigate(); // this is to programmatically go to new route
-    const location = useLocation(); // using this to trigger useEffect when route changes
+    // const location = useLocation(); // using this to trigger useEffect when route changes
 
-    // triggers when route changes, and when component loads
-    useEffect(() => {
-        updateLeaderboard()
-    }, [location]);
-
-    const updateLeaderboard = () => {
-        // fetch the data
-        // TODO: deal with pagination? currently just doing page 0 with 50 per page...
-        getCharLeaderboard(startDate.getTime()/1000, endDate.getTime()/1000, classValue, sortValue, minFightsValue, 1, 50)
-        .then((resp) => {
-            console.log(resp)
-            // TODO: display the returned data...
-        });
-    }
-
+    // TODO: can handleSubmit() be simplified by react-router-dom's "useSearchParams" hook instead of useState???
     const handleSubmit = (e) => {
         e.preventDefault();
-        navigate('/leaderboard?_page=1&_per_page=5&class=feca&min_fights=30')
-        console.log(`submit clicked! class=${classValue}, minfights=${minFightsValue}, start=${startDate.getTime()/1000}, end=${endDate.getTime()/1000}, sort=${sortValue}`)
+        // TODO: better handling of default values in this query string?
+        // specifically start/end datetimes generally have decimal in the default value :O
+        // TODO: also, pagination....
+        navigate('/leaderboard?_page=1&_per_page=50&dclass='+dclassValue+'&min_fights='+minFightsValue+'&start_date='+(startDate.getTime()/1000)+'&end_date='+(endDate.getTime()/1000)+'&_sort='+sortValue)
     }
 
     return (
@@ -51,7 +39,7 @@ const CharLeaderboardQuery = () => {
             >
                 <div>
                     <label>Class:</label>
-                    <select className="form-select" value={classValue} onChange={(e) => {setClassValue(e.target.value)}}>
+                    <select className="form-select" value={dclassValue} onChange={(e) => {setDClassValue(e.target.value)}}>
                         {[
                             'all',
                             'eni',

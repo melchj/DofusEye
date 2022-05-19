@@ -98,12 +98,12 @@ export function getFightImage(fightID) {
     });
 }
 
-export function getCharLeaderboard(start_timestamp, end_timestamp, class_name, sort, min_fights, page, per_page){
+export function getCharLeaderboard(start_timestamp, end_timestamp, dclass, sort, min_fights, page, per_page){
     // TODO: clean this up, handle if one of the arguments is null or something
-    if (class_name == 'all') {
-        class_name = ''
+    if (dclass == 'all') {
+        dclass = ''
     }
-    const url = '/api/characters?_page='+page+'&_per_page='+per_page+'&class='+class_name+'&min_fights='+min_fights+'&start_date='+start_timestamp+'&end_date='+end_timestamp+'&_sort='+sort
+    const url = '/api/characters?_page='+page+'&_per_page='+per_page+'&dclass='+dclass+'&min_fights='+min_fights+'&start_date='+start_timestamp+'&end_date='+end_timestamp+'&_sort='+sort
     return axios.get(url).then((response) => {
         return response.data;
     });

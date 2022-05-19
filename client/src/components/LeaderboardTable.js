@@ -1,9 +1,39 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import './Fight.css';
 
 const LeaderboardTable = (props) => {
 
+    // triggers when data changes
+    useEffect(() => {
+        console.log(props.data)
+    }, [props.data]);
+
+    const renderRows = () => {
+        if (!props.data) {
+            console.log('now rows to render!')
+            return null;
+        }
+
+        return (
+            props.data['data'].map((charData, index) => {
+                return (
+                    <tr>
+                        <th scope='row'>{charData['place']+1}</th>
+                        {/* <td>{charData['Class']}</td> */}
+                        <td><div className={'class-icon class-'+charData['Class']}></div></td>
+                        <td>{charData['name']}</td>
+                        <td>{charData['TFights']}</td>
+                        <td>{charData['TWins']}</td>
+                        <td>{(charData['Twr']*100).toFixed(1)}%</td>
+                    </tr>
+                )
+            })
+        );
+    };
+
     return (
         <div>
+            Showing {props.data && props.data['data']['length']} out of {props.data && props.data['total_matched']} results found:
             <table className='table table-hover table-lg'>
                 <thead>
                     <tr>
@@ -16,30 +46,7 @@ const LeaderboardTable = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope='row'>1</th>
-                        <td>eca</td>
-                        <td>character 1</td>
-                        <td>100</td>
-                        <td>69</td>
-                        <td>69%</td>
-                    </tr>
-                    <tr>
-                        <th scope='row'>2</th>
-                        <td>feca</td>
-                        <td>character 2</td>
-                        <td>1000</td>
-                        <td>42</td>
-                        <td>4.2%</td>
-                    </tr>
-                    <tr>
-                        <th scope='row'>3</th>
-                        <td>eni</td>
-                        <td>character 3</td>
-                        <td>55</td>
-                        <td>3</td>
-                        <td>5.5%</td>
-                    </tr>
+                    {renderRows()}
                 </tbody>
             </table>
         </div>
