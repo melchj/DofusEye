@@ -33,7 +33,12 @@ const LeaderboardTable = (props) => {
 
     return (
         <div>
-            Showing {props.data && props.data['data']['length']} out of {props.data && props.data['total_matched']} results found:
+            <div>
+                Showing {props.data && props.data['data']['length']} out of {props.data && props.data['total_matched']} results found between {props.data && props.data['filters']['start_date']} and {props.data && props.data['filters']['end_date']}.
+            </div>
+            <div>
+                note: this leaderboard only counts full 5v5 fights that happened during the time frame specified above.
+            </div>
             <table className='table table-hover table-lg'>
                 <thead>
                     <tr>

@@ -28,7 +28,7 @@ const LeaderboardPage = () => {
             <div className="btn-danger">
                 this leaderboard page is EXTRA unfinished... there might be improvements in a few days! ... or maybe a few months, who knows...
             </div>
-            <h1>Character Leaderboards</h1>
+            <h1>5v5 Character Leaderboards</h1>
             <div className="card text-dark bg-light mt-3">
                 <div className="card-body">
                     <h3>Filters:</h3>
