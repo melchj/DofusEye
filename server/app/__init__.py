@@ -249,6 +249,7 @@ def create_app():
         """
         returns a list of characters.
         filters and sorting can be passed via query.
+        only looks at 5v5 fights.
             start_date = unix timestamp
             end_date = unix timestamp
             dclass = filters for specified dofus class
@@ -268,7 +269,6 @@ def create_app():
         per_page = min(int(_per_page), 100) if _per_page else 10
 
         # parse sort and filters from query:
-        # TODO: there must be a more elegant way to do this "filters" bit??? this seems sketchy
         filters = {}
         _start_date = request.args.get('start_date')
         filters['start_date'] = datetime.fromtimestamp(int(float(_start_date))) if _start_date else None
@@ -288,25 +288,15 @@ def create_app():
         # print(f"per_page = {per_page}")
         # print(f'filters: {filters}')
 
-        # 
-        # 
-        # 
-        # 
-        # 
-        #         # TODO: add filter for 5v5 only!!!!!!!!!!
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-
         # if dofus class filter is "all", treat it the same as no filter on dofus class
         if filters['dclass'] == 'all':
             filters['dclass'] = None
 
         # query the fights db, applying fight level filters
         query = queryFightsbyDate(filters['start_date'], filters['end_date'])
+        # filter for only 5v5 fights
+        # TODO: technically... this would give incorrect result if a fight was misformed, containing w5/l5 but not other chars
+        query = query.filter(Fight.w5_name.isnot(None)).filter(Fight.l5_name.isnot(None))
         # TODO: apply discord server filter
         # get the list of characters (and win/loss numbers) out of this fight list
         fightsList = schema_fights.dump(query)
