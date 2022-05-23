@@ -1,0 +1,22 @@
+UPDATE perc_prism
+SET
+	w1_name = NULLIF(w1_name, ''),
+	w1_class = NULLIF(w1_class, ''),
+	w2_name = NULLIF(w2_name, ''),
+	w2_class = NULLIF(w2_class, ''),
+	w3_name = NULLIF(w3_name, ''),
+	w3_class = NULLIF(w3_class, ''),
+	w4_name = NULLIF(w4_name, ''),
+	w4_class = NULLIF(w4_class, ''),
+	w5_name = NULLIF(w5_name, ''),
+	w5_class = NULLIF(w5_class, ''),
+	l1_name = NULLIF(l1_name, ''),
+	l1_class = NULLIF(l1_class, ''),
+	l2_name = NULLIF(l2_name, ''),
+	l2_class = NULLIF(l2_class, ''),
+	l3_name = NULLIF(l3_name, ''),
+	l3_class = NULLIF(l3_class, ''),
+	l4_name = NULLIF(l4_name, ''),
+	l4_class = NULLIF(l4_class, ''),
+	l5_name = NULLIF(l5_name, ''),
+	l5_class = NULLIF(l5_class, '');

@@ -1,12 +1,14 @@
+from datetime import datetime
 from flask import Flask, Response, request, jsonify, abort
 from flask_migrate import Migrate
 from flask_cors import CORS
+from pandas import DataFrame
 from sqlalchemy import or_
 from app.stats import getCharacterStats
 from app.stats import getCharacterClass
 import boto3
 from botocore.config import Config
-from app.filters import filterFights
+from app.filters import filterFights, charactersInFights
 from flask_bcrypt import Bcrypt
 from app.wrappers import require_token, require_admin_token
 
@@ -57,7 +59,7 @@ def create_app():
     from app.schema import ma, schema_alias, schema_fight, schema_fights, schema_aliases
     ma.init_app(app)
 
-    # query function(s)
+    # ---- DB query functions ----
     def queryFightsbyCharacter(character_name):
         """returns query results of all fights with this character name."""
         # TODO: need to filter out results that come from testing channels. see discord bot query
@@ -76,6 +78,15 @@ def create_app():
             )
         )
         return queryResult
+    
+    def queryFightsbyDate(start_date:datetime, end_date:datetime):
+        """returns all fights between given dates, or open ended in either direction if a date is None."""
+        result = db.session.query(Fight)
+        if start_date:
+            result = result.filter(Fight.date >= start_date.timestamp())
+        if end_date:
+            result = result.filter(Fight.date <= end_date.timestamp())
+        return result
 
     # ---- stats endpoints ----
     @app.route('/api/stats/characters/<string:character_name>', methods=['GET'])
@@ -231,6 +242,105 @@ def create_app():
             "fight_id": fight.fight_id,
             "upload_url": url
         }), 201)
+
+    # ---- leaderboard endpoint(s) ----
+    @app.route('/api/characters', methods=['GET'])   
+    def getCharacters():
+        """
+        returns a list of characters.
+        filters and sorting can be passed via query.
+        only looks at 5v5 fights.
+            start_date = unix timestamp
+            end_date = unix timestamp
+            dclass = filters for specified dofus class
+            account = filters for specified account
+            discord_server = (int) filters for specified discord server id
+            _sort = wr (default), wins, numfights
+            min_fights = min number of total fights to include
+        paginated:
+            _page = page to retrieve. 1-indexed. default 1.
+            _per_page = number per page. default 10. max 100.
+        """
+        # parse page and per_page from query:
+        _page = request.args.get('_page')
+        page = int(_page) if _page else 1
+
+        _per_page = request.args.get('_per_page')
+        per_page = min(int(_per_page), 100) if _per_page else 10
+
+        # parse sort and filters from query:
+        filters = {}
+        _start_date = request.args.get('start_date')
+        filters['start_date'] = datetime.fromtimestamp(int(float(_start_date))) if _start_date else None
+        _end_date = request.args.get('end_date')
+        filters['end_date'] = datetime.fromtimestamp(int(float(_end_date))) if _end_date else None
+        filters['dclass'] = request.args.get('dclass')
+        filters['account'] = request.args.get('account')
+        _discord = request.args.get('discord_server')
+        filters['discord_server'] = int(_discord) if _discord else None
+        _sort = request.args.get('_sort')
+        filters['sort'] = _sort if _sort else 'wr'
+        _min_fights = request.args.get('min_fights')
+        filters['min_fights'] = int(_min_fights) if _min_fights else None
+
+        # print(f"query args: {request.args}")
+        # print(f"page = {page}")
+        # print(f"per_page = {per_page}")
+        # print(f'filters: {filters}')
+
+        # if dofus class filter is "all", treat it the same as no filter on dofus class
+        if filters['dclass'] == 'all':
+            filters['dclass'] = None
+
+        # query the fights db, applying fight level filters
+        query = queryFightsbyDate(filters['start_date'], filters['end_date'])
+        # filter for only 5v5 fights
+        # TODO: technically... this would give incorrect result if a fight was misformed, containing w5/l5 but not other chars
+        query = query.filter(Fight.w5_name.isnot(None)).filter(Fight.l5_name.isnot(None))
+        # TODO: apply discord server filter
+        # get the list of characters (and win/loss numbers) out of this fight list
+        fightsList = schema_fights.dump(query)
+        characterList = charactersInFights(fightsList)
+
+        returnData = []
+        total_matched = 0
+        # check to see if any characters were found with the given filters...
+        if characterList is not None:
+            # apply character level filters
+            if filters['dclass']:
+                characterList = characterList[characterList['Class'] == filters['dclass']]
+            if filters['min_fights']:
+                characterList = characterList[characterList['TFights'] >= filters['min_fights']]
+            # TODO: account filter here?
+
+            # apply sorting
+            if filters['sort'].lower() == 'wins':
+                characterList = characterList.sort_values(by=['TWins', 'Twr'], ascending=False)
+            elif filters['sort'].lower() == 'numfights':
+                characterList = characterList.sort_values(by=['TFights', 'Twr'], ascending=False)
+            elif filters['sort'].lower() == 'wr':
+                characterList = characterList.sort_values(by=['Twr','TFights'], ascending=False)
+
+            # apply pagination
+            characterList.reset_index(inplace=True)
+            total_matched = len(characterList)
+            start = per_page * (page - 1)
+            end = per_page * page
+            pageList : DataFrame = characterList.iloc[start:end].copy()
+            pageList.reset_index(inplace=True)
+            pageList.rename(columns={'level_0': 'place', 'index':'name'}, inplace=True)
+            # print(pageList)
+
+            returnData = pageList.to_dict(orient='records')
+        return (jsonify(
+        {
+            "total_matched": total_matched,
+            "page:": page,
+            "per_page": per_page,
+            # "sort": filters['sort'],
+            "filters": filters,
+            "data": returnData
+        }), 200)
 
     # ---- screenshot endpoint(s) ----
     @app.route('/api/fights/<int:id>/image', methods=['GET'])
@@ -410,16 +520,6 @@ def create_app():
                 'message': 'Provide a valid auth token.'
             }
             return (jsonify(responseObject), 401)
-    
-    @app.route('/api/test', methods=['GET'])
-    @require_token
-    def token_test():
-        return Response('bruh it worked i think')
-
-    @app.route('/api/test2', methods=['GET'])
-    @require_admin_token
-    def token_test2():
-        return Response('bruh it worked i think, ADMIIIIIIN')
 
     # ---- index endpoint ----
     @app.route('/api/', methods=['GET'])

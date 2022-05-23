@@ -7,6 +7,7 @@ import NoPage from './pages/NoPage';
 import { Route, Routes } from 'react-router-dom';
 import { Header } from './components/Header';
 import FightsPage from './pages/FightsPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path='/' element={<HomePage/>}/>
           <Route path='/character' element={<CharacterPage/>} exact/>
           <Route path='/character/:name' element={<CharacterPage/>}/>
+          <Route path='/leaderboard' element={<LeaderboardPage/>}/>
           <Route path='/account' element={<AccountPage/>}/>
           <Route path='/fights' element={<FightsPage/>}/>
           <Route path='*' element={<NoPage/>}/>
