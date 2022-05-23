@@ -34,10 +34,8 @@ const LeaderboardTable = (props) => {
     return (
         <div>
             <div>
-                Showing {props.data && props.data['data']['length']} out of {props.data && props.data['total_matched']} results found between {props.data && props.data['filters']['start_date']} and {props.data && props.data['filters']['end_date']}.
-            </div>
-            <div>
-                note: this leaderboard only counts full 5v5 fights that happened during the time frame specified above.
+                Found {props.data && props.data['total_matched']} characters with at least {props.data && props.data['filters']['min_fights']} full 5v5 fight(s) between {props.data && props.data['filters']['start_date']} and {props.data && props.data['filters']['end_date']}.
+                Showing the top {props.data && props.data['data']['length']} (sorted by {props.data && props.data['filters']['sort']}) below!
             </div>
             <table className='table table-hover table-lg'>
                 <thead>

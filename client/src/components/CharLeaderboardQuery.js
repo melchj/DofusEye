@@ -15,7 +15,7 @@ const CharLeaderboardQuery = () => {
     // set up input states
     const [startDate, setStartDate] = useState(date1);
     const [endDate, setEndDate] = useState(date2);
-    const [minFightsValue, setMinFightsValue] = useState(25)
+    const [minFightsValue, setMinFightsValue] = useState(5)
     const [dclassValue, setDClassValue] = useState('all');
     const [sortValue, setSortValue] = useState('wr');
     // TODO: make the formatting look nice :D
