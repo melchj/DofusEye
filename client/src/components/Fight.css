@@ -23,7 +23,7 @@
 }
 
 .class-icon {
-    /* is there a better way to reference the image? */
+    /* TODO: is there a better way to reference the image? */
     background: transparent url('/src/res/class-icons.png') 0 0 no-repeat;
     background-size: auto;
     background-origin: padding-box;

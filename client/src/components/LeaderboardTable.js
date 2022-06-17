@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './Fight.css';
 
 const LeaderboardTable = (props) => {
@@ -21,7 +22,11 @@ const LeaderboardTable = (props) => {
                         <th scope='row'>{charData['place']+1}</th>
                         {/* <td>{charData['Class']}</td> */}
                         <td><div className={'class-icon class-'+charData['Class']}></div></td>
-                        <td>{charData['name']}</td>
+                        <td>
+                            <Link to={ '/character/'+charData['name'] } className="text-body name-link">
+                                {charData['name']}
+                            </Link>
+                        </td>
                         <td>{charData['TFights']}</td>
                         <td>{charData['TWins']}</td>
                         <td>{(charData['Twr']*100).toFixed(1)}%</td>
