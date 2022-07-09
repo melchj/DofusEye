@@ -13,9 +13,12 @@ to attempt to build a restful api.
 # Backend
 ## 1. set up environment variables/configs
 
-TODO: reword this section (it's copy paste of a bunch of random notes, probably doesnt read well but i'm too lazy to fix at the moment)
-
-first, rename server/.flaskenv_dist to server/.flaskenv. same for client/.env_dist to client/.env
+first, rename `server/.flaskenv_dist` to `server/.flaskenv`. same for `client/.env_dist` to `client/.env`:
+```bash
+$ cp server/.flaskenv_dist server/.flaskenv
+$ cp client/.env_dist client/.env
+```
+TODO: i don't think that this SECRET_KEY and API_KEY stuff is needed anymore?
 
 open that file and put in there your SECRET_KEY and any other configs...
 
@@ -38,42 +41,44 @@ $ . venv/bin/activate
 $ .\venv\Scripts\activate
 ```
 
-navigate to server directory and update dependencies:
+Navigate to server directory and install/update dependencies:
 ```bash
-$ cd ./server/
+$ cd server/
 $ pip install -r requirements.txt
 ```
+NOTE: all of the following backend setup/maintenance should be done with the virtual environment active.
 
 ## 3. initialize the database
-(from within athe server directory, in the virtual environment)
-1. Ensure postgres is installed and working on the system.
-2. In a psql terminal, create the postgres database, name it "dofuseye"
+
+1. Ensure postgresql is [installed](https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart) and ensure the postgres service is currently running on the system.
+
+2. In a psql prompt, create the postgres database, name it `dofuseye`:
 ```sql
 CREATE DATABASE dofuseye;
 ```
-3. In `.flaskenv`, set the `DATABASE_URL` to the following, substituting in the postgres role username and password as appropriate: `postgresql://[username]:[password]@localhost:5432/dofuseye` (get rid of the square brakets too)
+3. In `server/.flaskenv`, set the `DATABASE_URL` to the following, substituting in the postgres role username and password as appropriate: `postgresql://[username]:[password]@localhost:5432/dofuseye` (get rid of the square brakets too)
+
 4. Execute the following commands to initialize the databse:
 ```bash
-flask db init
-flask db upgrade
+$ flask db init
+$ flask db upgrade
 ```
-At this point, the postgres database is set up, though empty of data. See below for database migration and population details.
+
+At this point, the postgres database is set up, though empty of all data. See below for [database migration](#database-migration) and [database population](#database-data-population) details.
 
 ## 4. start backend server
-(https://flask.palletsprojects.com/en/2.0.x/quickstart/)
 
-(from server directory, in virtual environment)
 ```bash
-flask run
+$ flask run
 ```
 
-# Front end
+# Frontend
 
-Ensure node.js is installed on the system.
+Ensure node.js is [installed](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04).
 
-Rename 'client/.env_dist' to 'client/.env', and then paste the API key (from server/.flaskenv) inside this file. This makes sure the front end can tell the server that it is authorized to make requests.
+Rename `client/.env_dist` to `client/.env`, and then paste the API key (from server/.flaskenv) inside this file. This makes sure the front end can tell the server that it is authorized to make requests.
 
-navigate to ./client
+navigate to `client/` directory.
 
 install node packages
 ```bash
@@ -86,20 +91,31 @@ start the front end:
 npm start
 ```
 
-Now you can navigate to `http://localhost:3000`.
+Now you can navigate to `http://localhost:3000` in a web browser!
 
 
----
 ## Database Data Population
-If you have a binary `main.db` sqlite3 file that matches the schema of this project (likely generated from the "PercScoreKeeper Discord Bot", before its eventual integration with the rest of the DofusEye project), place this file in `server/main.db` and run the following python script to transfer the data from this file into the __EMPTY__ postgres database:
+---
+Make sure to start with an empy postgres database, where the schema has been set up with `flask db upgrade` but no data has been populated.
 
-(by "empty", this means the postgres database was cleared of all data and then the schema was set up by subsequently executing `flask db upgrade`.)
+### From prod DB backup
+If you have a binary backup file from the prod database backup export, something close to the following command can work to restore the binary postgres backup to the local postgres database:
+
+```bash
+$ pg_restore --verbose --clean --no-acl --no-owner -h localhost -d dofuseye backup.dump -U postgres
+```
+
+### From sqlite3 backup (unlikely)
+If you have a binary `main.db` sqlite3 file (unlikely) that matches the schema of this project (from the old "PercScoreKeeper Discord Bot", before its eventual integration with the rest of the DofusEye project), place this file at `server/main.db` and run the following python script to transfer the data from this file into the empty postgres database:
+
 ```bash
 $ python sqlite_to_psql.py
 ```
 
----
+NOTE: when populating from sqlite3 database in this way, the `perc_prism_fight_id_seq` value will likely need to be altered to the current max(fight_id) + 1 for the auto increment to work properly.
+
 ## Database Migration
+---
 TODO: This section is not complete
 
-will be something about `flask db migrate`, making sure the datatypes in migrations/versions/XXX.py are correct, then doing `flask db upgrade`... 
+...will be something about `flask db migrate`, making sure the datatypes in migrations/versions/XXX.py are correct, then doing `flask db upgrade`... 
