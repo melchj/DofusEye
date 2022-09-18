@@ -1,6 +1,6 @@
-# fly.toml file generated for dofuseye-flask on 2022-09-17T18:52:49-04:00
+# fly.toml file generated for dofuseye-server on 2022-09-17T21:02:39-04:00
 
-app = "dofuseye-flask"
+app = "dofuseye-server"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
