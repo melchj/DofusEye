@@ -524,6 +524,6 @@ def create_app():
     # ---- index endpoint ----
     @app.route('/api/', methods=['GET'])
     def index():
-        return jsonify({'status' : 'api running'})
+        return (jsonify({'status' : 'api running'}), 200)
     
     return app
