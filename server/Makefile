@@ -5,4 +5,4 @@ docker-build:
 	docker build -t dofuseye-server .
 
 docker-run:
-	docker run -d --network host --env-file .env dofuseye-server
+	docker run -d --name dofuseye-server --network host --env-file .env dofuseye-server
