@@ -16,18 +16,13 @@ services:
       - ./services/certbot/conf:/etc/letsencrypt
       - ./services/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-  # dofuseye-server:
-  #   container_name: dofuseye-server
-  #   build: .
-  #   expose:
-  #     - "8000"
-  #   env_file:
-  #     - .env
-  #   command: gunicorn -b 0.0.0:8000 wgsi:app
-  # nginx:
-  #   container_name: nginx
-  #   build: ./services/nginx
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - dofuseye-server
+  dofuseye-server:
+    container_name: dofuseye-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: result/latest
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
