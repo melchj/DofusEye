@@ -1,0 +1,28 @@
+version: '3'
+services:
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./services/nginx:/etc/nginx/conf.d
+      - ./services/certbot/conf:/etc/letsencrypt
+      - ./services/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./services/certbot/conf:/etc/letsencrypt
+      - ./services/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  dofuseye-server:
+    container_name: dofuseye-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: result/latest
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
