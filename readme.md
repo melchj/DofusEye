@@ -1,3 +1,10 @@
+## goodbye
+July 27th, 2023
+
+This was a fun project that I started about 2 (3?) years ago. I learned a lot and had fun making it. I haven't made progress on it for a long time, and now I admit that I will likely not make progress on it again in the future. Thanks everyone who enjoyed it. I miss playing Dofus lol.
+
+-Chonk (Jack)
+
 # Dofus Eye
 This is a test project. I wanted a web based viewer for the dofus perc screenshot reader bot. we'll see where this goes.
 
